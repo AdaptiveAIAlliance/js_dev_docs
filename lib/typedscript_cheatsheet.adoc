@@ -1,0 +1,354 @@
+= TypeScript Cheatsheet
+
+This cheatsheet provides a quick reference to TypeScript syntax and key features, building upon your JavaScript knowledge.
+
+== 1. Basic Types
+
+*   TypeScript extends JavaScript with static types.
+*   Explicitly define types for variables, function parameters, and return values.
+*   Basic types include: `boolean`, `number`, `string`, `null`, `undefined`, `symbol`, `bigint`, `object`.
+*   TypeScript also introduces: `any`, `unknown`, `void`, `never`, `tuple`, `enum`, and literal types.
+
+=== Type Annotations
+
+*   Use a colon `:` followed by the type after a variable or parameter name.
+
+[source,typescript]
+----
+let isDone: boolean = false;
+let decimal: number = 6;
+let color: string = "blue";
+let u: undefined = undefined;
+let n: null = null;
+----
+
+=== Any Type
+
+*   Opt-out of type checking.
+*   Useful when migrating JavaScript code or dealing with dynamic content.
+*   Avoid overuse to maintain type safety benefits.
+
+[source,typescript]
+----
+let notSure: any = 4;
+notSure = "maybe a string instead";
+notSure = false; // okay, boolean definitely
+----
+
+=== Unknown Type (Type-Safe `any`)
+
+*   Similar to `any`, but type-safe.
+*   Requires type assertions or narrowing before performing operations.
+*   Use when you don't know the type but want to enforce type safety.
+
+[source,typescript]
+----
+let maybe: unknown = "this could be anything";
+
+// You need to perform type narrowing or assertion before using 'maybe'
+if (typeof maybe === "string") {
+  let str: string = maybe; // Type narrowing within the if block
+  console.log(str.toUpperCase());
+}
+
+// Type assertion (use with caution)
+let strLength: number = (maybe as string).length;
+console.log(strLength);
+----
+
+=== Void Type
+
+*   Represents the absence of a return value from a function.
+
+[source,typescript]
+----
+function warnUser(): void {
+  console.log("This is my warning message");
+}
+----
+
+=== Never Type
+
+*   Represents values that *never* occur.
+*   Typically used for functions that always throw an error or have infinite loops.
+
+[source,typescript]
+----
+// Function returning never must have unreachable endpoint
+function error(message: string): never {
+    throw new Error(message);
+}
+
+// Inferred return type is never
+function fail() {
+    return error("Something failed");
+}
+
+// Function returning never must have unreachable endpoint
+function infiniteLoop(): never {
+    while (true) {}
+}
+----
+
+== 2. Interfaces
+
+*   Define contracts for object structures.
+*   Specify required properties, their types, and optional properties.
+*   Can be implemented by classes or object literals.
+
+[source,typescript]
+----
+interface Person {
+  firstName: string;
+  lastName: string;
+  age?: number; // Optional property
+  readonly id: number; // Read-only property
+  greet(): string; // Method signature
+}
+
+let user: Person = {
+  firstName: "John",
+  lastName: "Doe",
+  id: 12345,
+  greet: () => `Hello, my name is ${user.firstName} ${user.lastName}`
+};
+
+console.log(user.greet());
+// user.id = 54321; // Error: Cannot assign to 'id' because it is a read-only property.
+----
+
+== 3. Classes
+
+*   Similar to JavaScript classes but with type annotations and access modifiers.
+*   Support inheritance, interfaces, and abstract classes.
+
+[source,typescript]
+----
+class Animal {
+  protected name: string; // Accessible within Animal and subclasses
+  private sound: string;  // Only accessible within Animal
+
+  constructor(theName: string, sound: string) {
+    this.name = theName;
+    this.sound = sound;
+  }
+
+  move(distanceInMeters: number = 0) {
+    console.log(`${this.name} moved ${distanceInMeters}m.`);
+  }
+
+  makeSound(): void {
+    console.log(this.sound);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name: string) {
+    super(name, "Woof!");
+  }
+
+  bark(): void {
+    this.makeSound();
+  }
+}
+
+const myDog = new Dog("Buddy");
+myDog.move(10);
+myDog.bark();
+// console.log(myDog.sound); // Error: Property 'sound' is private and only accessible within class 'Animal'.
+console.log(myDog.name); // OK, 'name' is protected
+----
+
+== 4. Functions
+
+*   Type annotations for parameters and return types.
+*   Optional parameters and default parameter values.
+*   Function overloading.
+
+[source,typescript]
+----
+// Named function with type annotations
+function add(x: number, y: number): number {
+  return x + y;
+}
+
+// Anonymous function type
+let myAdd: (x: number, y: number) => number =
+  function(x: number, y: number): number { return x + y; };
+
+// Optional and default parameters
+function buildName(firstName: string, lastName?: string, middleName = "Initial"): string {
+  if (lastName) {
+    return firstName + " " + middleName + " " + lastName;
+  } else {
+    return firstName + " " + middleName;
+  }
+}
+
+let name1 = buildName("Bob");                  // works correctly now, returns "Bob Initial"
+let name2 = buildName("Bob", "Adams", "Middle");    // still works, returns "Bob Middle Adams"
+let name3 = buildName("Bob", "Adams");         // still works, returns "Bob Initial Adams"
+
+console.log(name1);
+console.log(name2);
+console.log(name3);
+----
+
+== 5. Generics
+
+*   Write reusable code that can work with multiple types.
+*   Type parameters allow you to define type placeholders.
+
+[source,typescript]
+----
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+let outputNumber = identity<number>(1);  // type of output will be 'number'
+let outputString = identity<string>("myString");  // type of output will be 'string'
+
+console.log(outputNumber);
+console.log(outputString);
+
+// Generic interface
+interface GenericIdentityFn<T> {
+  (arg: T): T;
+}
+
+let myIdentity: GenericIdentityFn<number> = identity;
+console.log(myIdentity(100));
+----
+
+== 6. Enums
+
+*   Define a set of named constants.
+*   Numeric or string-based enums.
+
+[source,typescript]
+----
+// Numeric enum (default)
+enum Direction {
+    Up,    // 0
+    Down,  // 1
+    Left,  // 2
+    Right, // 3
+}
+let directions = [Direction.Up, Direction.Down, Direction.Left, Direction.Right];
+
+// String enum
+enum StatusCodes {
+    NotFound = 404,
+    Success = 200,
+    Accepted = 202,
+    BadRequest = 400
+};
+
+console.log(Direction.Up);
+console.log(StatusCodes.NotFound);
+----
+
+== 7. Tuples
+
+*   Fixed-size arrays with known types at each index.
+
+[source,typescript]
+----
+let tupleValue: [string, number];
+tupleValue = ["hello", 10]; // OK
+// tupleValue = [10, "hello"]; // Error: Type 'number' is not assignable to type 'string' at index '0'.
+
+console.log(tupleValue[0]); // string
+console.log(tupleValue[1]); // number
+----
+
+== 8. Type Aliases
+
+*   Create new names for existing types.
+*   Improve code readability and maintainability.
+
+[source,typescript]
+----
+type Point = {
+  x: number;
+  y: number;
+};
+
+function printPoint(p: Point): void {
+  console.log(`Point: x=${p.x}, y=${p.y}`);
+}
+
+let myPoint: Point = { x: 10, y: 20 };
+printPoint(myPoint);
+
+type StringOrNumber = string | number; // Union type alias
+
+function processValue(val: StringOrNumber): void {
+  if (typeof val === "string") {
+    console.log(`String value: ${val.toUpperCase()}`);
+  } else {
+    console.log(`Number value: ${val * 2}`);
+  }
+}
+
+processValue("hello");
+processValue(5);
+----
+
+== 9. Union and Intersection Types
+
+*   **Union Types (`|`):**  A value can be one of several types.
+*   **Intersection Types (`&`):** A value must satisfy multiple types.
+
+[source,typescript]
+----
+// Union Type
+function printId(id: string | number): void {
+  if (typeof id === "string") {
+    console.log(`ID is string: ${id.toUpperCase()}`);
+  } else {
+    console.log(`ID is number: ${id}`);
+  }
+}
+
+printId(101);
+printId("202");
+
+// Intersection Type
+interface Colorful {
+  color: string;
+}
+interface Circle {
+  radius: number;
+}
+
+type ColorfulCircle = Colorful & Circle; // Must be both Colorful and Circle
+
+const cc: ColorfulCircle = {
+  color: "red",
+  radius: 10
+};
+
+console.log(`Colorful Circle: color=${cc.color}, radius=${cc.radius}`);
+----
+
+== 10. Type Inference
+
+*   TypeScript can often infer types without explicit annotations.
+*   Best practice to use explicit types for function signatures and complex data structures for clarity.
+
+[source,typescript]
+----
+// Type inference - 'x' and 'y' are inferred as numbers, return type is also inferred as number
+let x = 10; // Inferred as number
+let y = "hello"; // Inferred as string
+
+function multiply(a: number, b: number) { // Explicit types for parameters
+  return a * b; // Return type inferred as number
+}
+
+let result = multiply(5, 2); // 'result' is inferred as number
+console.log(result);
+----
+
+This cheatsheet provides a starting point for learning TypeScript.  For in-depth information, refer to the official TypeScript documentation. TypeScript enhances JavaScript with static typing, leading to more robust and maintainable code. Explore these features further to leverage the full power of TypeScript in your projects.

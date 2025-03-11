@@ -1,0 +1,1141 @@
+= JavaScript Data Structures Cheatsheet
+
+This cheatsheet provides a quick reference to common data structures available in JavaScript, along with code examples.
+
+== 1. Array
+
+*   Ordered list of values.
+*   Dynamically sized.
+*   Can hold elements of different data types.
+*   0-indexed.
+
+=== Common Operations
+
+*   **Creation:**
+    - `let arr = [];` (empty array literal)
+    - `let arr = [1, 2, 3];` (array literal with initial values)
+    - `let arr = new Array(5);` (array constructor with initial size - not recommended for initialization)
+*   **Access:** `arr[index]`
+*   **Insertion:**
+    - `arr.push(element)` (add to end)
+    - `arr.unshift(element)` (add to beginning)
+    - `arr.splice(index, 0, element)` (insert at index)
+*   **Deletion:**
+    - `arr.pop()` (remove from end)
+    - `arr.shift()` (remove from beginning)
+    - `arr.splice(index, 1)` (remove element at index)
+*   **Iteration:**
+    - `for (let i = 0; i < arr.length; i++) { ... }` (traditional for loop)
+    - `for (const element of arr) { ... }` (for...of loop)
+    - `arr.forEach(element => { ... });` (forEach method)
+    - `arr.map(element => { ... });` (map method - returns new array)
+    - `arr.filter(element => { ... });` (filter method - returns new array with filtered elements)
+*   **Search:**
+    - `arr.indexOf(element)` (returns first index of element or -1 if not found)
+    - `arr.includes(element)` (returns boolean if element is found)
+    - `arr.find(element => { ... });` (returns first element that satisfies condition or undefined)
+    - `arr.findIndex(element => { ... });` (returns first index that satisfies condition or -1)
+
+=== Code Examples
+
+[source,javascript]
+----
+// Creation
+let numbers = [1, 2, 3, 4, 5];
+let fruits = ['apple', 'banana', 'orange'];
+
+// Access
+console.log(numbers[0]); // Output: 1
+console.log(fruits[2]);  // Output: orange
+
+// Insertion
+numbers.push(6);        // numbers is now [1, 2, 3, 4, 5, 6]
+fruits.unshift('kiwi'); // fruits is now ['kiwi', 'apple', 'banana', 'orange']
+numbers.splice(2, 0, 1.5); // numbers is now [1, 2, 1.5, 3, 4, 5, 6]
+
+// Deletion
+numbers.pop();         // numbers is now [1, 2, 1.5, 3, 4, 5]
+fruits.shift();        // fruits is now ['apple', 'banana', 'orange']
+numbers.splice(3, 1);    // numbers is now [1, 2, 1.5, 4, 5]
+
+// Iteration
+for (let i = 0; i < fruits.length; i++) {
+  console.log(fruits[i]);
+}
+fruits.forEach(fruit => console.log(fruit.toUpperCase()));
+
+// Search
+console.log(numbers.indexOf(4));    // Output: 3
+console.log(fruits.includes('banana')); // Output: true
+let foundNumber = numbers.find(num => num > 3); // Output: 4
+console.log(foundNumber);
+----
+
+== 2. Object (Hash Map / Dictionary)
+
+*   Collection of key-value pairs.
+*   Keys are strings or Symbols (ES6+).
+*   Values can be any JavaScript data type.
+*   Unordered (order is not guaranteed in older JavaScript versions, but insertion order is preserved in ES6+ in most engines).
+
+=== Common Operations
+
+*   **Creation:**
+    - `let obj = {};` (empty object literal)
+    - `let obj = { key1: 'value1', key2: 123 };` (object literal with initial key-value pairs)
+    - `let obj = new Object();` (object constructor)
+*   **Access:**
+    - `obj.key` (dot notation - when key is a valid identifier)
+    - `obj['key']` (bracket notation - always works, especially for keys that are not valid identifiers or variables)
+*   **Insertion/Update:** `obj.key = value;` or `obj['key'] = value;` (if key exists, value is updated, otherwise new key-value pair is added)
+*   **Deletion:** `delete obj.key;` or `delete obj['key'];`
+*   **Iteration:**
+    - `for (const key in obj) { ... }` (for...in loop - iterates over keys)
+    - `Object.keys(obj).forEach(key => { ... });` (iterate over keys using Object.keys and forEach)
+    - `Object.values(obj).forEach(value => { ... });` (iterate over values using Object.values and forEach)
+    - `Object.entries(obj).forEach(([key, value]) => { ... });` (iterate over key-value pairs using Object.entries and forEach)
+*   **Check if key exists:** `key in obj` (returns boolean)
+
+=== Code Examples
+
+[source,javascript]
+----
+// Creation
+let person = {
+  firstName: 'John',
+  lastName: 'Doe',
+  age: 30
+};
+let emptyObject = {};
+
+// Access
+console.log(person.firstName);    // Output: John
+console.log(person['age']);       // Output: 30
+
+// Insertion/Update
+person.city = 'New York';        // person now has 'city' property
+person.age = 31;                // 'age' property is updated
+
+// Deletion
+delete person.lastName;         // 'lastName' property is removed
+
+// Iteration
+for (const key in person) {
+  console.log(key + ': ' + person[key]);
+}
+Object.keys(person).forEach(key => console.log('Key:', key));
+Object.values(person).forEach(value => console.log('Value:', value));
+Object.entries(person).forEach(([key, value]) => console.log(`${key}: ${value}`));
+
+// Check if key exists
+console.log('firstName' in person); // Output: true
+console.log('lastName' in person);  // Output: false
+----
+
+== 3. Set (ES6+)
+
+*   Collection of unique values.
+*   Values can be of any JavaScript data type.
+*   Order of elements is insertion order.
+
+=== Common Operations
+
+*   **Creation:** `let set = new Set();` or `let set = new Set([value1, value2, ...]);`
+*   **Insertion:** `set.add(value)` (adds value to the set, no duplicates allowed)
+*   **Deletion:** `set.delete(value)` (removes value from the set, returns boolean if value was found and deleted)
+*   **Check if value exists:** `set.has(value)` (returns boolean)
+*   **Size:** `set.size` (returns number of elements in the set)
+*   **Iteration:**
+    - `for (const value of set) { ... }` (for...of loop)
+    - `set.forEach(value => { ... });` (forEach method)
+*   **Clear all elements:** `set.clear()`
+
+=== Code Examples
+
+[source,javascript]
+----
+// Creation
+let uniqueNumbers = new Set();
+let colorsSet = new Set(['red', 'green', 'blue', 'red']); // 'red' will be added only once
+
+// Insertion
+uniqueNumbers.add(10);
+uniqueNumbers.add(20);
+uniqueNumbers.add(10); // Adding duplicate has no effect
+
+// Deletion
+uniqueNumbers.delete(20); // Removes 20
+console.log(uniqueNumbers.delete(30)); // Output: false (30 was not in the set)
+
+// Check if value exists
+console.log(colorsSet.has('blue'));  // Output: true
+console.log(colorsSet.has('yellow')); // Output: false
+
+// Size
+console.log(colorsSet.size);       // Output: 3 (only unique colors)
+
+// Iteration
+for (const color of colorsSet) {
+  console.log(color);
+}
+colorsSet.forEach(color => console.log(color.toUpperCase()));
+
+// Clear all elements
+uniqueNumbers.clear();
+console.log(uniqueNumbers.size); // Output: 0
+----
+
+== 4. Map (ES6+)
+
+*   Collection of key-value pairs, similar to Objects.
+*   Keys can be of any data type (including objects and primitives).
+*   Maintains insertion order of key-value pairs.
+
+=== Common Operations
+
+*   **Creation:** `let map = new Map();` or `let map = new Map([[key1, value1], [key2, value2], ...]);`
+*   **Insertion/Update:** `map.set(key, value)` (adds or updates key-value pair)
+*   **Access:** `map.get(key)` (returns value associated with key or undefined if key not found)
+*   **Deletion:** `map.delete(key)` (removes key-value pair, returns boolean if key was found and deleted)
+*   **Check if key exists:** `map.has(key)` (returns boolean)
+*   **Size:** `map.size` (returns number of key-value pairs in the map)
+*   **Iteration:**
+    - `for (const [key, value] of map) { ... }` (for...of loop - iterates over key-value pairs)
+    - `map.forEach((value, key) => { ... });` (forEach method)
+    - `map.keys()` (returns an iterable of keys)
+    - `map.values()` (returns an iterable of values)
+    - `map.entries()` (returns an iterable of key-value pairs - same as default iterator)
+*   **Clear all key-value pairs:** `map.clear()`
+
+=== Code Examples
+
+[source,javascript]
+----
+// Creation
+let myMap = new Map();
+let productMap = new Map([
+  ['product1', { name: 'Laptop', price: 1200 }],
+  ['product2', { name: 'Mouse', price: 25 }]
+]);
+
+// Insertion/Update
+myMap.set('name', 'Alice');
+myMap.set(1, 'Number key');
+myMap.set('name', 'Alice Updated'); // Updates value for key 'name'
+
+// Access
+console.log(myMap.get('name')); // Output: Alice Updated
+console.log(productMap.get('product2')); // Output: { name: 'Mouse', price: 25 }
+console.log(myMap.get('nonExistentKey')); // Output: undefined
+
+// Deletion
+myMap.delete(1); // Removes key 1 and its value
+console.log(myMap.delete('age')); // Output: false ('age' key not found)
+
+// Check if key exists
+console.log(myMap.has('name')); // Output: true
+console.log(myMap.has(1));      // Output: false
+
+// Size
+console.log(productMap.size);   // Output: 2
+
+// Iteration
+for (const [key, value] of productMap) {
+  console.log(`${key}:`, value);
+}
+productMap.forEach((value, key) => console.log(`${key}:`, value.name));
+for (const key of productMap.keys()) {
+  console.log('Key:', key);
+}
+for (const value of productMap.values()) {
+  console.log('Value:', value.price);
+}
+for (const entry of productMap.entries()) {
+  console.log('Entry:', entry);
+}
+
+// Clear all key-value pairs
+myMap.clear();
+console.log(myMap.size); // Output: 0
+----
+
+== 5. Stack
+
+*   LIFO (Last-In, First-Out) data structure.
+*   Operations: push (add to top), pop (remove from top), peek (view top element), isEmpty.
+*   Can be implemented using an Array in JavaScript.
+
+=== Common Operations (using Array)
+
+*   **Push (add to top):** `stack.push(element)`
+*   **Pop (remove from top):** `stack.pop()` (returns and removes the top element, returns undefined if stack is empty)
+*   **Peek (view top):** `stack[stack.length - 1]` (access last element of array, returns undefined if stack is empty) or create a `peek()` function for clarity.
+*   **IsEmpty:** `stack.length === 0`
+
+=== Code Examples
+
+[source,javascript]
+----
+let stack = [];
+
+// Push
+stack.push(10);
+stack.push(20);
+stack.push(30); // Stack: [10, 20, 30]
+
+// Pop
+let topElement = stack.pop(); // Returns 30, stack is now [10, 20]
+console.log('Popped element:', topElement);
+
+// Peek
+let peekElement = stack[stack.length - 1]; // Or create function: const peek = () => stack[stack.length - 1];
+console.log('Top element (peek):', peekElement); // Output: 20
+
+// IsEmpty
+console.log('Is stack empty?', stack.length === 0); // Output: false
+
+// Pop until empty
+while (stack.length > 0) {
+  console.log('Popped:', stack.pop());
+}
+console.log('Is stack empty?', stack.length === 0); // Output: true
+----
+
+== 6. Queue
+
+*   FIFO (First-In, First-Out) data structure.
+*   Operations: enqueue (add to rear), dequeue (remove from front), peek (view front element), isEmpty.
+*   Can be implemented using an Array in JavaScript, but `shift()` and `unshift()` operations on Arrays can be inefficient for large queues. For performance-critical queues, consider using a Linked List based implementation.
+
+=== Common Operations (using Array - less efficient for large queues)
+
+*   **Enqueue (add to rear):** `queue.push(element)`
+*   **Dequeue (remove from front):** `queue.shift()` (returns and removes the first element, returns undefined if queue is empty)
+*   **Peek (view front):** `queue[0]` (access first element of array, returns undefined if queue is empty) or create a `peek()` function for clarity.
+*   **IsEmpty:** `queue.length === 0`
+
+=== Code Examples
+
+[source,javascript]
+----
+let queue = [];
+
+// Enqueue
+queue.push('Task 1');
+queue.push('Task 2');
+queue.push('Task 3'); // Queue: ['Task 1', 'Task 2', 'Task 3']
+
+// Dequeue
+let firstTask = queue.shift(); // Returns 'Task 1', queue is now ['Task 2', 'Task 3']
+console.log('Dequeued task:', firstTask);
+
+// Peek
+let frontTask = queue[0]; // Or create function: const peek = () => queue[0];
+console.log('Front task (peek):', frontTask); // Output: Task 2
+
+// IsEmpty
+console.log('Is queue empty?', queue.length === 0); // Output: false
+
+// Dequeue until empty
+while (queue.length > 0) {
+  console.log('Dequeued:', queue.shift());
+}
+console.log('Is queue empty?', queue.length === 0); // Output: true
+----
+
+== 7. Linked List (Singly Linked List Example)
+
+*   Linear data structure where elements (nodes) are linked together.
+*   Each node contains data and a reference (pointer) to the next node.
+*   Dynamic size, efficient insertion and deletion at the beginning or middle, but slower access to elements by index compared to Arrays.
+
+=== Node Structure (for Linked List Implementation)
+
+[source,javascript]
+----
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null; // Pointer to the next node
+  }
+}
+----
+
+=== LinkedList Class (Singly Linked List)
+
+[source,javascript]
+----
+class LinkedList {
+  constructor() {
+    this.head = null; // Head of the list (first node)
+    this.size = 0;
+  }
+
+  // Insert at the beginning
+  prepend(data) {
+    const newNode = new Node(data);
+    newNode.next = this.head;
+    this.head = newNode;
+    this.size++;
+  }
+
+  // Insert at the end
+  append(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+    this.size++;
+  }
+
+  // Insert at a specific index
+  insertAt(data, index) {
+    if (index < 0 || index > this.size) {
+      return; // Invalid index
+    }
+    if (index === 0) {
+      this.prepend(data);
+      return;
+    }
+    const newNode = new Node(data);
+    let current = this.head;
+    let previous = null;
+    let count = 0;
+    while (count < index) {
+      previous = current;
+      current = current.next;
+      count++;
+    }
+    newNode.next = current;
+    previous.next = newNode;
+    this.size++;
+  }
+
+  // Remove from beginning
+  removeFromFront() {
+    if (!this.head) {
+      return undefined; // Empty list
+    }
+    const removedNode = this.head;
+    this.head = this.head.next;
+    this.size--;
+    return removedNode.data;
+  }
+
+  // Remove from end
+  removeFromEnd() {
+    if (!this.head) {
+      return undefined; // Empty list
+    }
+    if (!this.head.next) { // Single node list
+      const removedNode = this.head;
+      this.head = null;
+      this.size = 0;
+      return removedNode.data;
+    }
+    let current = this.head;
+    let previous = null;
+    while (current.next) {
+      previous = current;
+      current = current.next;
+    }
+    previous.next = null;
+    this.size--;
+    return current.data;
+  }
+
+  // Remove from specific index
+  removeFromIndex(index) {
+    if (index < 0 || index >= this.size || !this.head) {
+      return undefined; // Invalid index or empty list
+    }
+    if (index === 0) {
+      return this.removeFromFront();
+    }
+    let current = this.head;
+    let previous = null;
+    let count = 0;
+    while (count < index) {
+      previous = current;
+      current = current.next;
+      count++;
+    }
+    previous.next = current.next;
+    this.size--;
+    return current.data;
+  }
+
+  // Get element at index
+  getAt(index) {
+    if (index < 0 || index >= this.size || !this.head) {
+      return undefined; // Invalid index or empty list
+    }
+    let current = this.head;
+    let count = 0;
+    while (count < index) {
+      current = current.next;
+      count++;
+    }
+    return current.data;
+  }
+
+  // Clear list
+  clear() {
+    this.head = null;
+    this.size = 0;
+  }
+
+  // Convert to array for easy display
+  toArray() {
+    const arr = [];
+    let current = this.head;
+    while (current) {
+      arr.push(current.data);
+      current = current.next;
+    }
+    return arr;
+  }
+
+  // Get size
+  getSize() {
+    return this.size;
+  }
+
+  // IsEmpty
+  isEmpty() {
+    return this.size === 0;
+  }
+}
+----
+
+=== Code Examples (Linked List Usage)
+
+[source,javascript]
+----
+const list = new LinkedList();
+
+// Append
+list.append(10);
+list.append(20);
+list.append(30); // List: 10 -> 20 -> 30
+
+// Prepend
+list.prepend(5);  // List: 5 -> 10 -> 20 -> 30
+
+// Insert at index
+list.insertAt(15, 2); // List: 5 -> 10 -> 15 -> 20 -> 30
+
+// Remove from front
+console.log('Removed from front:', list.removeFromFront()); // Output: 5, List: 10 -> 15 -> 20 -> 30
+
+// Remove from end
+console.log('Removed from end:', list.removeFromEnd());   // Output: 30, List: 10 -> 15 -> 20
+
+// Remove from index
+console.log('Removed from index 1:', list.removeFromIndex(1)); // Output: 15, List: 10 -> 20
+
+// Get at index
+console.log('Element at index 1:', list.getAt(1)); // Output: 20
+
+// Size and IsEmpty
+console.log('List size:', list.getSize());        // Output: 2
+console.log('Is list empty?', list.isEmpty());     // Output: false
+
+// To Array
+console.log('List as array:', list.toArray());     // Output: [10, 20]
+
+// Clear list
+list.clear();
+console.log('List size after clear:', list.getSize()); // Output: 0
+----
+
+== 8. Tree (Binary Search Tree - BST Example)
+
+*   Hierarchical data structure.
+*   Nodes have parent-child relationships.
+*   Binary Search Tree (BST): Each node has at most two children (left and right), and values in the left subtree are less than the node's value, and values in the right subtree are greater.
+*   Efficient for searching, insertion, and deletion (in balanced BSTs).
+
+=== Node Structure (for BST Implementation)
+
+[source,javascript]
+----
+class TreeNode {
+  constructor(data) {
+    this.data = data;
+    this.left = null;  // Left child node
+    this.right = null; // Right child node
+  }
+}
+----
+
+=== BinarySearchTree Class
+
+[source,javascript]
+----
+class BinarySearchTree {
+  constructor() {
+    this.root = null; // Root of the BST
+  }
+
+  // Insert a node
+  insert(data) {
+    const newNode = new TreeNode(data);
+    if (!this.root) {
+      this.root = newNode;
+      return;
+    }
+    this.insertNode(this.root, newNode);
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.data < node.data) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  // Search for a node
+  search(data) {
+    return this.searchNode(this.root, data);
+  }
+
+  searchNode(node, data) {
+    if (!node) {
+      return null; // Not found
+    }
+    if (data < node.data) {
+      return this.searchNode(node.left, data);
+    } else if (data > node.data) {
+      return this.searchNode(node.right, data);
+    } else {
+      return node; // Found
+    }
+  }
+
+  // Inorder traversal (Left, Root, Right - sorted order for BST)
+  inorderTraversal(node, callback) {
+    if (node) {
+      this.inorderTraversal(node.left, callback);
+      callback(node.data);
+      this.inorderTraversal(node.right, callback);
+    }
+  }
+
+  // Preorder traversal (Root, Left, Right)
+  preorderTraversal(node, callback) {
+    if (node) {
+      callback(node.data);
+      this.preorderTraversal(node.left, callback);
+      this.preorderTraversal(node.right, callback);
+    }
+  }
+
+  // Postorder traversal (Left, Right, Root)
+  postorderTraversal(node, callback) {
+    if (node) {
+      this.postorderTraversal(node.left, callback);
+      this.postorderTraversal(node.right, callback);
+      callback(node.data);
+    }
+  }
+
+  // Minimum value node in BST
+  findMinNode(node) {
+    if (!node) {
+      return null;
+    }
+    while (node.left) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  // Remove a node (simplified - does not handle all cases like balancing)
+  remove(data) {
+    this.root = this.removeNode(this.root, data);
+  }
+
+  removeNode(node, data) {
+    if (!node) {
+      return null;
+    }
+    if (data < node.data) {
+      node.left = this.removeNode(node.left, data);
+      return node;
+    } else if (data > node.data) {
+      node.right = this.removeNode(node.right, data);
+      return node;
+    } else { // data === node.data (Node to be deleted found)
+      if (!node.left && !node.right) { // Case 1: Leaf node
+        return null;
+      }
+      if (!node.left) { // Case 2: Only right child
+        return node.right;
+      }
+      if (!node.right) { // Case 2: Only left child
+        return node.left;
+      }
+      // Case 3: Node with two children - Find min node in right subtree and replace
+      const minRight = this.findMinNode(node.right);
+      node.data = minRight.data;
+      node.right = this.removeNode(node.right, minRight.data); // Remove the inorder successor
+      return node;
+    }
+  }
+
+  // Is tree empty
+  isEmpty() {
+    return !this.root;
+  }
+}
+----
+
+=== Code Examples (Binary Search Tree Usage)
+
+[source,javascript]
+----
+const bst = new BinarySearchTree();
+
+// Insert
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(8);
+bst.insert(12);
+bst.insert(20);
+// BST structure (simplified):
+//       10
+//      /  \
+//     5    15
+//    / \   / \
+//   3   8 12  20
+
+// Search
+console.log('Search for 12:', bst.search(12)); // Output: TreeNode { data: 12, left: null, right: null }
+console.log('Search for 7:', bst.search(7));  // Output: null
+
+// Traversal - Inorder (sorted order)
+console.log('Inorder traversal:');
+bst.inorderTraversal(bst.root, data => console.log(data)); // Output: 3, 5, 8, 10, 12, 15, 20
+
+// Traversal - Preorder
+console.log('Preorder traversal:');
+bst.preorderTraversal(bst.root, data => console.log(data)); // Output: 10, 5, 3, 8, 15, 12, 20
+
+// Traversal - Postorder
+console.log('Postorder traversal:');
+bst.postorderTraversal(bst.root, data => console.log(data)); // Output: 3, 8, 5, 12, 20, 15, 10
+
+// Remove
+bst.remove(15); // Remove node with value 15
+console.log('Inorder traversal after removing 15:');
+bst.inorderTraversal(bst.root, data => console.log(data)); // Output: 3, 5, 8, 10, 12, 20
+
+// IsEmpty
+console.log('Is BST empty?', bst.isEmpty()); // Output: false
+
+// Clear (not implemented in example class, but can be added - simply set root to null)
+// bst.clear();
+// console.log('Is BST empty after clear?', bst.isEmpty());
+----
+
+== 9. Graph (Adjacency List Representation - Undirected Graph Example)
+
+*   Collection of nodes (vertices) and edges connecting them.
+*   Can be directed or undirected, weighted or unweighted.
+*   Adjacency List: Common representation where each vertex stores a list of its adjacent vertices.
+
+=== Graph Class (Adjacency List)
+
+[source,javascript]
+----
+class Graph {
+  constructor() {
+    this.adjacencyList = {}; // Use an object to store adjacency list
+  }
+
+  // Add vertex
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = []; // Initialize adjacency list for vertex
+    }
+  }
+
+  // Add edge (undirected graph)
+  addEdge(vertex1, vertex2) {
+    if (!this.adjacencyList[vertex1]) this.addVertex(vertex1);
+    if (!this.adjacencyList[vertex2]) this.addVertex(vertex2);
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1); // For undirected graph, add edge in both directions
+  }
+
+  // Remove vertex (and all edges connected to it)
+  removeVertex(vertex) {
+    if (!this.adjacencyList[vertex]) return;
+
+    while (this.adjacencyList[vertex].length) {
+      const adjacentVertex = this.adjacencyList[vertex].pop();
+      this.removeEdge(vertex, adjacentVertex); // Remove edges connected to vertex
+    }
+    delete this.adjacencyList[vertex]; // Remove vertex from adjacency list
+  }
+
+  // Remove edge (undirected graph)
+  removeEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1] = this.adjacencyList[vertex1].filter(v => v !== vertex2);
+    this.adjacencyList[vertex2] = this.adjacencyList[vertex2].filter(v => v !== vertex1);
+  }
+
+  // Check if vertex exists
+  hasVertex(vertex) {
+    return !!this.adjacencyList[vertex];
+  }
+
+  // Check if edge exists
+  hasEdge(vertex1, vertex2) {
+    return this.adjacencyList[vertex1]?.includes(vertex2) || false; // Optional chaining and nullish coalescing for safety
+  }
+
+  // Get neighbors of a vertex
+  getNeighbors(vertex) {
+    return this.adjacencyList[vertex] || [];
+  }
+
+  // Get all vertices
+  getVertices() {
+    return Object.keys(this.adjacencyList);
+  }
+
+  // Get number of vertices
+  vertexCount() {
+    return Object.keys(this.adjacencyList).length;
+  }
+
+  // Get number of edges (for undirected graph, divide by 2 to avoid double counting)
+  edgeCount() {
+    let count = 0;
+    for (const vertex in this.adjacencyList) {
+      count += this.adjacencyList[vertex].length;
+    }
+    return count / 2; // Undirected graph
+  }
+
+  // Clear graph
+  clear() {
+    this.adjacencyList = {};
+  }
+}
+----
+
+=== Code Examples (Graph Usage)
+
+[source,javascript]
+----
+const graph = new Graph();
+
+// Add vertices
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+
+// Add edges
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'D');
+// Graph structure (undirected):
+// A -- B
+// |  / |
+// C -- D
+
+// Check vertex and edge existence
+console.log('Has vertex A?', graph.hasVertex('A')); // Output: true
+console.log('Has edge A-B?', graph.hasEdge('A', 'B')); // Output: true
+console.log('Has edge A-D?', graph.hasEdge('A', 'D')); // Output: false
+
+// Get neighbors
+console.log('Neighbors of C:', graph.getNeighbors('C')); // Output: ['A', 'B', 'D']
+
+// Get vertex and edge count
+console.log('Vertex count:', graph.vertexCount()); // Output: 4
+console.log('Edge count:', graph.edgeCount());   // Output: 4
+
+// Remove vertex
+graph.removeVertex('C'); // Removes vertex C and edges A-C, B-C, C-D
+console.log('Vertices after removing C:', graph.getVertices()); // Output: ['A', 'B', 'D']
+console.log('Edge count after removing C:', graph.edgeCount()); // Output: 1 (only A-B edge remains)
+
+// Remove edge
+graph.removeEdge('A', 'B'); // Removes edge A-B
+console.log('Edge count after removing A-B:', graph.edgeCount()); // Output: 0
+
+// Clear graph
+graph.clear();
+console.log('Vertex count after clear:', graph.vertexCount()); // Output: 0
+console.log('Edge count after clear:', graph.edgeCount());   // Output: 0
+----
+
+== 10. Priority Queue (Min-Heap based Example)
+
+*   Queue where elements are dequeued based on priority.
+*   Typically implemented using a Heap data structure (Min-Heap or Max-Heap).
+*   Min-Heap:  Elements with the smallest priority value are dequeued first.
+*   Max-Heap: Elements with the largest priority value are dequeued first.
+*   This example demonstrates a Min-Heap based Priority Queue.
+
+=== PriorityQueue Class (Min-Heap Implementation)
+
+[source,javascript]
+----
+class PriorityQueue {
+  constructor() {
+    this.heap = []; // Array to represent the min-heap
+  }
+
+  // Enqueue with priority (priority should be a number - lower value means higher priority)
+  enqueue(element, priority) {
+    const node = { element, priority };
+    this.heap.push(node);
+    this.bubbleUp(); // Maintain min-heap property after insertion
+  }
+
+  bubbleUp() {
+    let index = this.heap.length - 1;
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      if (this.heap[parentIndex].priority <= this.heap[index].priority) {
+        break; // Parent has higher or equal priority, min-heap property maintained
+      }
+      this.swap(index, parentIndex);
+      index = parentIndex;
+    }
+  }
+
+  swap(index1, index2) {
+    [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
+  }
+
+  // Dequeue (remove element with highest priority - smallest priority value in Min-Heap)
+  dequeue() {
+    if (this.isEmpty()) {
+      return undefined; // Empty queue
+    }
+    if (this.heap.length === 1) {
+      return this.heap.pop().element;
+    }
+    const minNode = this.heap[0]; // Root is min in Min-Heap
+    this.heap[0] = this.heap.pop(); // Move last element to root
+    this.sinkDown(0); // Maintain min-heap property after removal
+    return minNode.element;
+  }
+
+  sinkDown(index) {
+    const length = this.heap.length;
+    while (true) {
+      let smallestChildIndex = index;
+      let leftChildIndex = 2 * index + 1;
+      let rightChildIndex = 2 * index + 2;
+
+      if (leftChildIndex < length && this.heap[leftChildIndex].priority < this.heap[smallestChildIndex].priority) {
+        smallestChildIndex = leftChildIndex;
+      }
+      if (rightChildIndex < length && this.heap[rightChildIndex].priority < this.heap[smallestChildIndex].priority) {
+        smallestChildIndex = rightChildIndex;
+      }
+      if (smallestChildIndex === index) {
+        break; // Node is in correct position, min-heap property maintained
+      }
+      this.swap(index, smallestChildIndex);
+      index = smallestChildIndex;
+    }
+  }
+
+  // Peek at the element with highest priority (without removing)
+  peek() {
+    if (this.isEmpty()) {
+      return undefined;
+    }
+    return this.heap[0].element; // Root is min element
+  }
+
+  // Is priority queue empty
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  // Get size
+  size() {
+    return this.heap.length;
+  }
+}
+----
+
+=== Code Examples (Priority Queue Usage)
+
+[source,javascript]
+----
+const pq = new PriorityQueue();
+
+// Enqueue with priorities (lower priority value means higher priority)
+pq.enqueue('Task A', 3); // Task A with priority 3
+pq.enqueue('Task B', 1); // Task B with priority 1 (highest)
+pq.enqueue('Task C', 4);
+pq.enqueue('Task D', 2); // Task D with priority 2
+
+// Dequeue - elements dequeued based on priority (Task B, Task D, Task A, Task C)
+console.log('Dequeue 1:', pq.dequeue()); // Output: Task B (priority 1)
+console.log('Dequeue 2:', pq.dequeue()); // Output: Task D (priority 2)
+console.log('Dequeue 3:', pq.dequeue()); // Output: Task A (priority 3)
+console.log('Dequeue 4:', pq.dequeue()); // Output: Task C (priority 4)
+console.log('Dequeue 5:', pq.dequeue()); // Output: undefined (queue is empty)
+
+// IsEmpty and Size
+console.log('Is PQ empty?', pq.isEmpty()); // Output: true
+console.log('PQ size:', pq.size());       // Output: 0
+
+// Enqueue again
+pq.enqueue('Task E', 2);
+pq.enqueue('Task F', 1);
+pq.enqueue('Task G', 3);
+
+// Peek
+console.log('Peek at highest priority element:', pq.peek()); // Output: Task F (priority 1)
+console.log('PQ size after enqueue:', pq.size());             // Output: 3 (queue not modified by peek)
+----
+
+This cheatsheet provides a basic overview of common JavaScript data structures. Explore further documentation and resources for more advanced operations and use cases. Remember to choose the appropriate data structure based on the specific requirements of your application for optimal performance and efficiency.
+
+== 11. simple Three
+
+=== Code Examples (simple Three Usage)
+
+[source,javascript]
+----
+export default function ThreeNode(name, type, children) {
+  this.children = type == "file" ? null : children;
+  this.name = name;
+  this.type = type;
+  this.findNodeByName = function (targetName) {
+    if (this.name === targetName) {
+      return this;
+    }
+
+    if (this.children) {
+      for (const child of this.children) {
+        const foundNode = child.findNodeByName(targetName);
+        if (foundNode) {
+          return foundNode;
+        }
+      }
+    }
+
+    return null;
+  };
+}
+----
+
+== 11. Simple Tree (Custom `ThreeNode` Example)
+
+*   Custom tree-like data structure.
+*   Nodes can represent files or directories.
+*   Each node has a `name`, `type` ('file' or 'directory'), and `children` (for directories).
+*   Includes a method `findNodeByName` to search for a node by name recursively.
+
+=== Node Structure (`ThreeNode`)
+
+[source,javascript]
+----
+/*
+ * Constructor for a ThreeNode.
+ *
+ * @param {string} name - The name of the node (file or directory).
+ * @param {string} type - The type of the node, either "file" or "directory".
+ * @param {Array<ThreeNode>} [children] - An array of child ThreeNodes, only applicable if type is "directory". Null for "file" type.
+ *
+ * Example Usage:
+ * const rootDir = new ThreeNode("Root", "directory", [
+ *   new ThreeNode("file1.txt", "file"),
+ *   new ThreeNode("subdir", "directory", [
+ *     new ThreeNode("file2.txt", "file")
+ *   ])
+ * ]);
+ */
+function ThreeNode(name, type, children) {
+  this.children = type == "file" ? null : children;
+  this.name = name;
+  this.type = type;
+  this.findNodeByName = function (targetName) {
+    if (this.name === targetName) {
+      return this;
+    }
+
+    if (this.children) {
+      for (const child of this.children) {
+        const foundNode = child.findNodeByName(targetName);
+        if (foundNode) {
+          return foundNode;
+        }
+      }
+    }
+
+    return null;
+  };
+}
+----
+
+=== Code Examples (simple Three Usage)
+
+[source,javascript]
+----
+// Create a sample Three structure
+const rootDir = new ThreeNode("Root", "directory", [
+  new ThreeNode("file1.txt", "file"),
+  new ThreeNode("subdir", "directory", [
+    new ThreeNode("file2.txt", "file"),
+    new ThreeNode("file3.txt", "file")
+  ]),
+  new ThreeNode("file4.txt", "file")
+]);
+
+// Access node properties
+console.log("Root name:", rootDir.name);         // Output: Root
+console.log("Root type:", rootDir.type);         // Output: directory
+console.log("Root children:", rootDir.children); // Output: Array of ThreeNodes
+
+const subdirNode = rootDir.children[1];
+console.log("Subdir name:", subdirNode.name);     // Output: subdir
+console.log("Subdir type:", subdirNode.type);     // Output: directory
+console.log("Subdir children:", subdirNode.children); // Output: Array of ThreeNodes
+
+const file1Node = rootDir.children[0];
+console.log("file1.txt name:", file1Node.name);   // Output: file1.txt
+console.log("file1.txt type:", file1Node.type);   // Output: file
+console.log("file1.txt children:", file1Node.children); // Output: null
+
+// Find node by name
+const foundNode1 = rootDir.findNodeByName("file2.txt");
+console.log("Found node 'file2.txt':", foundNode1); // Output: ThreeNode { children: null, name: 'file2.txt', type: 'file', findNodeByName: [Function] }
+
+const foundNode2 = rootDir.findNodeByName("nonexistent.txt");
+console.log("Found node 'nonexistent.txt':", foundNode2); // Output: null
+----
+
+This cheatsheet provides a basic overview of common JavaScript data structures and a custom `ThreeNode` example. Explore further documentation and resources for more advanced operations and use cases. Remember to choose the appropriate data structure based on the specific requirements of your application for optimal performance and efficiency.```
