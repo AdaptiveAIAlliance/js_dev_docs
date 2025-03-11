@@ -1,0 +1,277 @@
+= Common React Design Patterns
+
+React design patterns are reusable solutions to common problems encountered when developing React applications. They promote code reusability, maintainability, and scalability. Here are some of the most common React design patterns with code examples:
+
+== 1. Composition
+
+Composition is a fundamental React concept and a powerful design pattern. It emphasizes building complex UIs by composing smaller, reusable components. Instead of inheritance, React favors composition to share behavior between components.
+
+=== Code Example:
+
+[source,javascript]
+----
+// Container component
+const FancyBorder = (props) => {
+  return (
+    <div className={'FancyBorder FancyBorder-' + props.color}>
+      {props.children}
+    </div>
+  );
+};
+
+// Welcome Dialog component using composition
+const WelcomeDialog = () => {
+  return (
+    <FancyBorder color="blue">
+      <h1>
+        Welcome
+      </h1>
+      <p>
+        Thank you for visiting our website.
+      </p>
+    </FancyBorder>
+  );
+};
+
+// Usage
+<WelcomeDialog />
+----
+
+=== Explanation:
+
+In this example, `FancyBorder` is a container component that provides a styled border. `WelcomeDialog` composes `FancyBorder` by placing its content (heading and paragraph) within the `FancyBorder` component's `children` prop. This demonstrates how composition allows building complex UI elements by combining simpler ones.
+
+== 2. Container/Presentational (or Smart/Dumb) Components
+
+This pattern separates components into two categories:
+
+*   **Container Components (Smart):** Handle data fetching, state management, and logic. They are aware of the application's data and business logic.
+*   **Presentational Components (Dumb):** Focus on how things look. They receive data and callbacks via props and render UI. They are unaware of the application's data and business logic.
+
+=== Code Example:
+
+[source,javascript]
+----
+// Presentational Component (Dumb)
+const UserCard = ({ name, avatar, onClick }) => {
+  return (
+    <div className="user-card" onClick={onClick}>
+      <img src={avatar} alt={name} />
+      <h3>{name}</h3>
+    </div>
+  );
+};
+
+// Container Component (Smart)
+const UserListContainer = () => {
+  const [users, setUsers] = React.useState([]);
+
+  React.useEffect(() => {
+    // Simulate fetching users data
+    setTimeout(() => {
+      setUsers([
+        { id: 1, name: 'Alice', avatar: 'alice.jpg' },
+        { id: 2, name: 'Bob', avatar: 'bob.jpg' },
+      ]);
+    }, 1000);
+  }, []);
+
+  const handleUserClick = (userName) => {
+    alert(`User ${userName} clicked!`);
+  };
+
+  return (
+    <div className="user-list">
+      {users.map(user => (
+        <UserCard
+          key={user.id}
+          name={user.name}
+          avatar={user.avatar}
+          onClick={() => handleUserClick(user.name)}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Usage
+<UserListContainer />
+----
+
+=== Explanation:
+
+`UserCard` is a presentational component responsible for rendering user information. `UserListContainer` is a container component that manages the `users` state, fetches user data, and handles user click events. It passes data and the `handleUserClick` callback as props to `UserCard`. This separation improves component reusability and testability.
+
+== 3. Higher-Order Components (HOCs)
+
+A higher-order component (HOC) is a function that takes a component as an argument and returns a new component. HOCs are used for code reuse, logic abstraction, and prop manipulation. While Hooks are now often preferred for many use cases, HOCs remain a relevant pattern, especially in older codebases or for specific scenarios like prop proxying or render hijacking.
+
+=== Code Example:
+
+[source,javascript]
+----
+// HOC function
+const withLogging = (WrappedComponent) => {
+  return class WithLogging extends React.Component {
+    componentDidMount() {
+      console.log(`Component ${WrappedComponent.name} is mounted`);
+    }
+
+    render() {
+      return <WrappedComponent {...this.props} />;
+    }
+  };
+};
+
+// Component to be wrapped
+const MyComponent = (props) => {
+  return <div>Hello, {props.name}</div>;
+};
+
+// Enhanced component with logging
+const LoggedComponent = withLogging(MyComponent);
+
+// Usage
+<LoggedComponent name="World" />
+----
+
+=== Explanation:
+
+`withLogging` is an HOC that takes `WrappedComponent` and returns a new component `WithLogging`. `WithLogging` adds logging functionality to the wrapped component's lifecycle. `LoggedComponent` is the enhanced version of `MyComponent` with logging. HOCs enable cross-cutting concerns like logging or authentication to be applied to multiple components.
+
+== 4. Render Props
+
+Render Props is a technique for sharing code between React components using a prop whose value is a function. This function, the "render prop," determines what to render. Render props offer a flexible way to implement component composition and logic reuse.
+
+=== Code Example:
+
+[source,javascript]
+----
+// Mouse tracker component with render prop
+class MouseTracker extends React.Component {
+  state = { x: 0, y: 0 };
+
+  handleMouseMove = (event) => {
+    this.setState({
+      x: event.clientX,
+      y: event.clientY
+    });
+  }
+
+  render() {
+    return (
+      <div style={{ height: '500px' }} onMouseMove={this.handleMouseMove}>
+        {this.props.render(this.state)}
+      </div>
+    );
+  }
+}
+
+// Component using MouseTracker with render prop
+const ShowMousePosition = () => {
+  return (
+    <MouseTracker
+      render={mouse => (
+        <p>The mouse position is ({mouse.x}, {mouse.y})</p>
+      )}
+    />
+  );
+};
+
+// Usage
+<ShowMousePosition />
+----
+
+=== Explanation:
+
+`MouseTracker` component tracks mouse movements and exposes the mouse position through the `render` prop. `ShowMousePosition` uses `MouseTracker` and provides a render prop function that receives the mouse position and renders a paragraph displaying the coordinates. Render props allow components to share behavior and UI rendering logic in a highly reusable way.
+
+== 5. Hooks (for State and Side Effects)
+
+Hooks are functions that let you "hook into" React state and lifecycle features from within functional components. They were introduced in React 16.8 and provide a more direct and simpler way to manage state and side effects in functional components, replacing class-based components for many scenarios.
+
+=== Code Example:
+
+[source,javascript]
+----
+import React, { useState, useEffect } from 'react';
+
+const ExampleComponent = () => {
+  const [count, setCount] = useState(0); // State hook
+
+  useEffect(() => { // Effect hook
+    document.title = `You clicked ${count} times`; // Side effect
+  }, [count]); // Effect dependency array
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+};
+
+// Usage
+<ExampleComponent />
+----
+
+=== Explanation:
+
+`useState` hook declares a state variable `count` and a function `setCount` to update it. `useEffect` hook performs side effects after render. In this case, it updates the document title whenever `count` changes. Hooks simplify state and side effect management in functional components, making code cleaner and more readable.
+
+== 6. Provider Pattern (Context API)
+
+The Provider pattern (often implemented with React's Context API) is used for sharing data that is considered "global" for a tree of React components, such as current user, theme, or locale. It avoids prop-drilling, where props are passed down through many levels of components that don't actually need them.
+
+=== Code Example:
+
+[source,javascript]
+----
+import React, { createContext, useContext, useState } from 'react';
+
+// Create context
+const ThemeContext = createContext();
+
+// Theme Provider Component
+const ThemeProvider = (props) => {
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {props.children}
+    </ThemeContext.Provider>
+  );
+};
+
+// Consumer Component
+const ThemedButton = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
+  return (
+    <button onClick={toggleTheme}>
+      Current Theme: {theme}
+    </button>
+  );
+};
+
+// Usage
+const App = () => {
+  return (
+    <ThemeProvider>
+      <ThemedButton />
+    </ThemeProvider>
+  );
+};
+----
+
+=== Explanation:
+
+`ThemeContext` is created using `createContext`. `ThemeProvider` component provides the theme data and `toggleTheme` function to its children via `ThemeContext.Provider`. `ThemedButton` component consumes the theme context using `useContext(ThemeContext)`. This pattern allows deeply nested components to access theme data without prop drilling.
+
+These are some of the most common and fundamental design patterns in React. Understanding and applying these patterns can significantly improve the structure, maintainability, and scalability of your React applications. Remember to choose the pattern that best fits the specific problem you are trying to solve.

@@ -1,0 +1,79 @@
+= HTML Canvas Cheatsheet
+
+This cheatsheet provides a quick reference to essential HTML Canvas concepts, API, and methods for drawing graphics using JavaScript.
+
+== Core Concepts
+
+*   **Raster Graphics:** Canvas is a raster graphics technology. Drawings are composed of pixels, and scaling up may result in pixelation.
+*   **Immediate Mode Graphics:**  Drawing commands are executed immediately. Once drawn, objects are not individually accessible in the same way as SVG elements. To modify, you typically need to redraw the entire or parts of the canvas.
+*   **JavaScript API:** Canvas is manipulated entirely through JavaScript.
+*   **`<canvas>` Element:**  HTML element that acts as a container for graphics.
+*   **Rendering Context:**  Object obtained from the canvas element that provides drawing functions (e.g., 2D rendering context: `CanvasRenderingContext2D`).
+
+== Basic Setup
+
+=== Get Canvas Element and Context
+
+[source,javascript]
+----
+// Get the canvas element by its ID
+const canvas = document.getElementById('myCanvas');
+
+// Get 2D rendering context (most common)
+const ctx = canvas.getContext('2d');
+
+// Check if context is supported
+if (!ctx) {
+  alert("Canvas is not supported in your browser!");
+}
+----
+
+=== Set Canvas Dimensions
+
+*   Set `width` and `height` attributes of the `<canvas>` element or use JavaScript properties.
+*   CSS styling can resize the *display* of the canvas, but for resolution, set the HTML attributes or JavaScript properties to match the desired pixel dimensions.
+
+[source,html]
+----
+// HTML Attributes
+<canvas id="myCanvas" width="500" height="300"></canvas>
+----
+
+[source,javascript]
+----
+// JavaScript Properties
+canvas.width = 500;
+canvas.height = 300;
+----
+
+== Drawing Shapes
+
+=== Rectangles
+
+*   `fillRect(x, y, width, height)`: Fills a rectangle.
+*   `strokeRect(x, y, width, height)`: Strokes a rectangle outline.
+*   `clearRect(x, y, width, height)`: Clears a rectangular area, making it transparent.
+
+[source,javascript]
+----
+// Filled rectangle
+ctx.fillStyle = 'blue';
+ctx.fillRect(10, 10, 100, 50); // x, y, width, height
+
+// Stroked rectangle
+ctx.strokeStyle = 'red';
+ctx.lineWidth = 3;
+ctx.strokeRect(150, 10, 100, 50);
+
+// Clear rectangle
+ctx.clearRect(10, 80, 150, 40); // Clears area, useful for animation
+----
+
+=== Paths (Lines, Curves, Complex Shapes)
+
+*   `beginPath()`: Starts a new path.
+*   `closePath()`: Closes the current path (connects last point to first).
+*   `moveTo(x, y)`: Moves the starting point of a new sub-path.
+*   `lineTo(x, y)`: Draws a straight line from the current point to (x, y).
+*   `arc(x, y, radius, startAngle, endAngle, anticlockwise)`: Draws an arc or circle.
+*   `arcTo(x1

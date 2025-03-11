@@ -1,0 +1,192 @@
+= Chart.js Cheatsheet
+
+This cheatsheet provides a quick reference to essential Chart.js concepts and syntax for creating interactive charts in JavaScript.
+
+== Core Concepts
+
+*   **Chart Object:** The main object used to create and manage charts.
+*   **Chart Types:** Different visual representations of data (e.g., bar, line, pie).
+*   **Data:**  Datasets and labels that define the chart's content.
+*   **Configuration:** Options to customize the chart's appearance and behavior.
+*   **Canvas Element:** HTML5 `<canvas>` element where the chart is rendered.
+
+== Chart Types
+
+*   **Line Chart:** Displays data points connected by lines, showing trends over time or categories.
+*   **Bar Chart:**  Represents data with rectangular bars, comparing values across categories.
+*   **Pie Chart:**  Circular chart divided into sectors, showing proportions of a whole.
+*   **Doughnut Chart:** Similar to a pie chart, but with a hole in the center.
+*   **Radar Chart (Spider Chart):** Displays multivariate data in the form of a two-dimensional chart of three or more quantitative variables represented on axes starting from the same point.
+*   **Polar Area Chart:** Similar to pie charts, but sectors have varying radii based on data values.
+*   **Bubble Chart:**  Displays data points as bubbles, with bubble size representing a third data dimension.
+*   **Scatter Chart:** Plots data points on a Cartesian plane, showing relationships between two variables.
+*   **Area Chart:** Line chart with the area below the line filled in, emphasizing magnitude of change.
+*   **Mixed Chart:** Combines different chart types in a single chart for complex data visualization.
+
+== Configuration Options
+
+*   **`type`:**  Specifies the chart type (e.g., `'bar'`, `'line'`, `'pie'`).
+*   **`data`:**
+    *   `labels`: Array of labels for data points (e.g., categories, time periods).
+    *   `datasets`: Array of datasets, each representing a set of data to be plotted.
+        *   `label`: Label for the dataset (displayed in legend).
+        *   `data`: Array of data values.
+        *   `backgroundColor`, `borderColor`: Colors for bars, lines, points, etc.
+        *   `borderWidth`: Width of borders.
+        *   `pointStyle`, `pointRadius`: Styling for data points (line and scatter charts).
+        *   ... (dataset-specific options)
+*   **`options`:**
+    *   `responsive`: Boolean to make the chart responsive to container size.
+    *   `maintainAspectRatio`: Boolean to maintain aspect ratio or allow free scaling.
+    *   `plugins`: Configuration for plugins (e.g., title, legend, tooltip).
+        *   `title`:
+            *   `display`: Boolean to show title.
+            *   `text`: Title text.
+            *   `position`: Title position (`'top'`, `'bottom'`, `'left'`, `'right'`).
+        *   `legend`:
+            *   `display`: Boolean to show legend.
+            *   `position`: Legend position (`'top'`, `'bottom'`, `'left'`, `'right'`, `'chartArea'`).
+        *   `tooltip`: Configuration for tooltips on hover.
+    *   `scales`: Configuration for axes (for cartesian charts like bar, line, scatter).
+        *   `x`: X-axis configuration.
+        *   `y`: Y-axis configuration.
+            *   `type`: Scale type (`'linear'`, `'logarithmic'`, `'category'`, `'time'`).
+            *   `title`:
+                *   `display`: Boolean to show axis title.
+                *   `text`: Axis title text.
+            *   `ticks`: Configuration for axis ticks.
+                *   `beginAtZero`: Boolean to start y-axis at zero.
+                *   `stepSize`: Interval between ticks.
+                *   `callback`: Function to format tick labels.
+    *   ... (chart type specific options and general options)
+
+== Code Examples
+
+=== Bar Chart
+
+[source,javascript]
+----
+// Get canvas element
+const ctx = document.getElementById('barChart').getContext('2d');
+
+// Create bar chart
+const barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        datasets: [{
+            label: '# of Sales',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)'
+            ],
+            borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Monthly Sales Data'
+            },
+            legend: {
+                position: 'top'
+            }
+        }
+    }
+});
+----
+
+=== Line Chart
+
+[source,javascript]
+----
+// Get canvas element
+const ctxLine = document.getElementById('lineChart').getContext('2d');
+
+// Create line chart
+const lineChart = new Chart(ctxLine, {
+    type: 'line',
+    data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{
+            label: 'Website Visitors',
+            data: [50, 60, 75, 90],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1 // Line tension (bezier curve)
+        }]
+    },
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Weekly Website Visitors'
+            }
+        }
+    }
+});
+----
+
+=== Pie Chart
+
+[source,javascript]
+----
+// Get canvas element
+const ctxPie = document.getElementById('pieChart').getContext('2d');
+
+// Create pie chart
+const pieChart = new Chart(ctxPie, {
+    type: 'pie',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 205, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)'
+            ],
+            borderColor: 'rgba(255, 255, 255, 1)',
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Color Distribution'
+            }
+        }
+    }
+});
+----
+
+== Important Notes
+
+*   **Installation:** Include Chart.js library in your HTML (`<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>`) or use a package manager (e.g., `npm install chart.js`).
+*   **Canvas Setup:** Ensure you have a `<canvas>` element in your HTML with an `id` to target in JavaScript.
+*   **Configuration Reference:** Refer to the official Chart.js documentation for all available options and chart types: https://www.chartjs.org/docs/latest/
+
+This cheatsheet provides a starting point for using Chart.js. Explore the official documentation for more advanced features and customization.

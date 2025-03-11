@@ -1,0 +1,180 @@
+= SVG Cheatsheet
+
+This cheatsheet provides a quick reference to essential SVG (Scalable Vector Graphics) concepts, syntax, and elements for creating vector graphics in web development.
+
+== Core Concepts
+
+*   **Vector Graphics:**  Images defined by mathematical formulas describing lines, curves, and shapes, rather than pixels. Scalable without loss of quality.
+*   **XML-based:** SVG is written in XML (Extensible Markup Language).
+*   **Resolution Independent:**  SVGs look sharp at any resolution or zoom level.
+*   **Interactivity and Animation:**  Supports interactivity and animation through JavaScript and CSS.
+*   **DOM Access:**  SVG elements are part of the DOM (Document Object Model) and can be manipulated with JavaScript.
+
+== Basic Syntax
+
+*   SVG documents are well-formed XML.
+*   Root element is `<svg>`.
+*   Elements are defined using tags and attributes.
+*   Namespaces: SVG elements belong to the SVG namespace, usually declared in the root `<svg>` tag: `xmlns="http://www.w3.org/2000/svg"`.
+
+=== Basic SVG Structure
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 200 200" width="200" height="200">
+  </svg>
+----
+
+=== Common Attributes
+
+*   **`xmlns`:** XML namespace for SVG (`http://www.w3.org/2000/svg`).
+*   **`version`:** SVG specification version (e.g., `1.1`, `2.0`).
+*   **`width` and `height`:** Dimensions of the SVG canvas (can be in pixels or other CSS units).
+*   **`viewBox`:** Defines the visible area of the SVG canvas. Format: `min-x min-y width height`. Allows scaling and panning.
+*   **`style`:**  Inline CSS styles.
+*   **Presentation Attributes:** Attributes like `fill`, `stroke`, `stroke-width`, `opacity` to style SVG elements directly.
+*   **`id` and `class`:**  For CSS styling and JavaScript manipulation.
+
+== Common SVG Elements
+
+=== Shapes
+
+*   **`<rect>`:** Rectangle.
+    *   `x`, `y`:  Top-left corner coordinates.
+    *   `width`, `height`: Dimensions.
+    *   `rx`, `ry`:  Rounded corners (optional).
+
+[source,xml]
+----
+<rect x="10" y="10" width="100" height="50" fill="blue" />
+<rect x="120" y="10" width="80" height="50" rx="10" ry="10" fill="red" />
+----
+
+*   **`<circle>`:** Circle.
+    *   `cx`, `cy`: Center coordinates.
+    *   `r`: Radius.
+
+[source,xml]
+----
+<circle cx="50" cy="50" r="40" fill="green" />
+----
+
+*   **`<ellipse>`:** Ellipse.
+    *   `cx`, `cy`: Center coordinates.
+    *   `rx`: Radius along the x-axis.
+    *   `ry`: Radius along the y-axis.
+
+[source,xml]
+----
+<ellipse cx="100" cy="50" rx="80" ry="30" fill="orange" />
+----
+
+*   **`<line>`:** Straight line.
+    *   `x1`, `y1`: Start point coordinates.
+    *   `x2`, `y2`: End point coordinates.
+
+[source,xml]
+----
+<line x1="10" y1="10" x2="100" y2="100" stroke="black" stroke-width="2" />
+----
+
+*   **`<polyline>`:** Series of connected straight lines.
+    *   `points`:  Space-separated list of x,y coordinates.
+
+[source,xml]
+----
+<polyline points="20,20 40,25 60,40 80,120 120,140 200,180" fill="none" stroke="purple" stroke-width="3"/>
+----
+
+*   **`<polygon>`:** Closed shape with straight lines.
+    *   `points`: Space-separated list of x,y coordinates (last point connects to first).
+
+[source,xml]
+----
+<polygon points="50,5 90,90 10,90" fill="yellow" stroke="black" stroke-width="1"/>
+----
+
+*   **`<path>`:**  Defines complex shapes, curves, and arcs. Uses path data commands (e.g., M, L, C, S, Q, A, Z).
+    *   `d`: Path data attribute containing path commands.
+
+[source,xml]
+----
+<path d="M150 0 L75 200 L225 200 Z" fill="lime"/> <path d="M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80" stroke="blue" fill="transparent" stroke-width="5"/> ----
+
+=== Text
+
+*   **`<text>`:**  Renders text.
+    *   `x`, `y`:  Starting position of the text baseline.
+    *   Text content is placed between the opening and closing `<text>` tags.
+    *   Styling attributes like `font-size`, `font-family`, `fill`, `text-anchor`.
+
+[source,xml]
+----
+<text x="10" y="30" font-size="20" fill="navy">Hello SVG Text</text>
+----
+
+=== Grouping and Reusing
+
+*   **`<g>`:** Grouping element.  Apply transformations or styles to multiple elements at once.
+
+[source,xml]
+----
+<g fill="red" stroke="black">
+  <circle cx="20" cy="20" r="10" />
+  <rect x="40" y="10" width="30" height="20" />
+</g>
+----
+
+*   **`<symbol>` and `<use>`:** Define reusable graphic templates.
+    *   `<symbol>`: Defines a template, not rendered directly.
+    *   `<use>`:  Instantiates a symbol. `xlink:href` attribute references the symbol's `id`.
+
+[source,xml]
+----
+<svg>
+  <symbol id="mySymbol" viewBox="0 0 50 50">
+    <circle cx="25" cy="25" r="20" fill="purple" />
+  </symbol>
+
+  <use xlink:href="#mySymbol" x="10" y="10" width="50" height="50" />
+  <use xlink:href="#mySymbol" x="80" y="10" width="30" height="30" />
+</svg>
+----
+
+=== Styling SVG
+
+*   **Presentation Attributes:**  Styling attributes directly on SVG elements (e.g., `fill="red"`, `stroke="blue"`).
+*   **Inline Styles:**  `style` attribute with CSS properties (`style="fill: green; stroke: black;"`).
+*   **CSS Stylesheets:**  External or embedded CSS stylesheets using selectors to target SVG elements (recommended for maintainability and separation of concerns).
+
+[source,css]
+----
+/* CSS Styling Example */
+.my-rect {
+  fill: gold;
+  stroke: darkgoldenrod;
+  stroke-width: 2;
+}
+
+#myCircle {
+  fill: lightcoral;
+}
+----
+
+[source,xml]
+----
+<svg>
+  <style>
+    /* Embedded CSS */
+    .my-rect {
+      fill: gold;
+      stroke: darkgoldenrod;
+      stroke-width: 2;
+    }
+    #myCircle {
+      fill: lightcoral;
+    }
+  </style>
+
+  <rect class="my-rect" x="10" y="

@@ -1,0 +1,416 @@
+= React Components Cheatsheet
+
+This cheatsheet provides a quick reference to essential React component concepts, lifecycle, hooks, and form element examples.
+
+== Core Component Concepts
+
+=== Functional Components
+
+*   JavaScript functions that return JSX.
+*   Primary way to write React components in modern React.
+*   Use Hooks to manage state and side effects.
+
+[source,javascript]
+----
+// Functional Component Example
+const MyFunctionalComponent = (props) => {
+  return (
+    <div>
+      <h1>Hello, {props.name}!</h1>
+      <p>{props.children}</p>
+    </div>
+  );
+};
+----
+
+=== Class Components
+
+*   ES6 classes that extend `React.Component`.
+*   Less common in modern React, but still found in older codebases.
+*   Manage state using `this.state` and `setState`.
+*   Use lifecycle methods for side effects and component logic.
+
+[source,javascript]
+----
+// Class Component Example
+class MyClassComponent extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>Hello, {this.props.name}!</h1>
+        <p>{this.props.children}</p>
+      </div>
+    );
+  }
+}
+----
+
+=== Props (Properties)
+
+*   Input data passed from parent components to child components.
+*   Read-only within the component receiving them.
+*   Access props in functional components as function arguments (`props`).
+*   Access props in class components using `this.props`.
+
+[source,javascript]
+----
+// Passing Props
+<MyComponent name="React User">
+  This is children content.
+</MyComponent>
+
+// Accessing Props in Functional Component
+const MyComponent = (props) => {
+  return (
+    <div>
+      <h1>Hello, {props.name}!</h1>
+      <p>{props.children}</p>
+    </div>
+  );
+};
+
+// Accessing Props in Class Component
+class MyComponent extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>Hello, {this.props.name}!</h1>
+        <p>{this.props.children}</p>
+      </div>
+    );
+  }
+}
+----
+
+=== State
+
+*   Internal data managed within a component.
+*   Changes to state trigger re-renders of the component and its children.
+*   State in functional components is managed using `useState` Hook.
+*   State in class components is managed using `this.state` and `this.setState`.
+
+==== State with `useState` (Functional Components)
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0); // Initialize state
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+----
+
+==== State in Class Components
+
+[source,javascript]
+----
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 }; // Initialize state
+  }
+
+  incrementCount = () => {
+    this.setState({ count: this.state.count + 1 }); // Update state
+  };
+
+  render() {
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.incrementCount}>Increment</button>
+      </div>
+    );
+  }
+}
+----
+
+=== Lifecycle and Hooks
+
+==== Lifecycle Methods (Class Components)
+
+*   Methods called at different stages of a component's life.
+    *   `componentDidMount()`: After component mounts (initial render).
+    *   `componentDidUpdate(prevProps, prevState)`: After updates (re-renders).
+    *   `componentWillUnmount()`: Before component unmounts.
+
+[source,javascript]
+----
+class ExampleLifecycle extends React.Component {
+  componentDidMount() {
+    console.log('Component Mounted');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('Component Updated');
+  }
+
+  componentWillUnmount() {
+    console.log('Component Will Unmount');
+  }
+
+  render() {
+    return <div>Lifecycle Example</div>;
+  }
+}
+----
+
+==== Hooks (`useEffect`, `useState`, etc.) (Functional Components)
+
+*   Functions that "hook into" React state and lifecycle features in functional components.
+    *   `useEffect(effect, dependencies)`: For side effects (data fetching, subscriptions, timers). Replaces lifecycle methods in functional components.
+    *   `useState(initialValue)`: For state management.
+    *   `useContext(Context)`: For consuming context values.
+    *   `useRef(initialValue)`: For creating mutable references that persist across renders.
+    *   `useMemo(callback, dependencies)`: For memoizing expensive computations.
+    *   `useCallback(callback, dependencies)`: For memoizing callbacks to prevent unnecessary re-renders.
+
+[source,javascript]
+----
+import React, { useState, useEffect } from 'react';
+
+const ExampleHooks = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `Count: ${count}`; // Side effect on count change
+
+    return () => {
+      // Cleanup function (optional, runs on unmount or before re-run)
+      console.log('Effect cleanup');
+    };
+  }, [count]); // Dependency array: effect runs when 'count' changes
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+----
+
+== Form Elements in React (Controlled Components)
+
+*   In React, form elements are typically controlled components.
+*   Their values are driven by React state, making data flow predictable and manageable.
+*   Use `useState` to manage form input values.
+*   Attach `onChange` event handlers to update state when input values change.
+
+=== Input (`<input type="text">`)
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const TextInput = () => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  return (
+    <div>
+      <label>
+        Enter text:
+        <input type="text" value={inputValue} onChange={handleChange} />
+      </label>
+      <p>You typed: {inputValue}</p>
+    </div>
+  );
+};
+----
+
+=== Textarea (`<textarea>`)
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const TextAreaInput = () => {
+  const [textAreaValue, setTextAreaValue] = useState('');
+
+  const handleChange = (event) => {
+    setTextAreaValue(event.target.value);
+  };
+
+  return (
+    <div>
+      <label>
+        Enter multi-line text:
+        <textarea value={textAreaValue} onChange={handleChange} />
+      </label>
+      <p>Textarea value: {textAreaValue}</p>
+    </div>
+  );
+};
+----
+
+=== Select Dropdown (`<select>`)
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const SelectInput = () => {
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+  };
+
+  return (
+    <div>
+      <label>
+        Choose an option:
+        <select value={selectedValue} onChange={handleChange}>
+          <option value="">--Please choose an option--</option>
+          <option value="option1">Option 1</option>
+          <option value="option2">Option 2</option>
+          <option value="option3">Option 3</option>
+        </select>
+      </label>
+      <p>You selected: {selectedValue}</p>
+    </div>
+  );
+};
+----
+
+=== Checkbox (`<input type="checkbox">`)
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const CheckboxInput = () => {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
+  return (
+    <div>
+      <label>
+        <input type="checkbox" checked={isChecked} onChange={handleChange} />
+        Check me
+      </label>
+      <p>Checkbox is: {isChecked ? 'checked' : 'unchecked'}</p>
+    </div>
+  );
+};
+----
+
+=== Radio Buttons (`<input type="radio">`)
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const RadioInput = () => {
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+  };
+
+  return (
+    <div>
+      <p>Select an option:</p>
+      <label>
+        <input
+          type="radio"
+          value="radio1"
+          checked={selectedValue === 'radio1'}
+          onChange={handleChange}
+        />
+        Option 1
+      </label>
+      <label>
+        <input
+          type="radio"
+          value="radio2"
+          checked={selectedValue === 'radio2'}
+          onChange={handleChange}
+        />
+        Option 2
+      </label>
+      <p>You selected: {selectedValue}</p>
+    </div>
+  );
+};
+----
+
+=== Button (`<button type="button">` or `<button type="submit">`)
+
+*   Buttons can trigger actions or form submissions.
+*   Handle click events using `onClick` for actions.
+*   For form submission, use `<form onSubmit={handleSubmit}>` and button with `type="submit"`.
+
+[source,javascript]
+----
+import React from 'react';
+
+const ButtonExample = () => {
+  const handleClick = () => {
+    alert('Button clicked!');
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent default form submission
+    alert('Form submitted!');
+  };
+
+  return (
+    <div>
+      <button type="button" onClick={handleClick}>
+        Click Action Button
+      </button>
+
+      <form onSubmit={handleSubmit}>
+        <button type="submit">Submit Form Button</button>
+      </form>
+    </div>
+  );
+};
+----
+
+== Component Composition
+
+*   React favors composition over inheritance.
+*   Build complex UIs by composing smaller, reusable components.
+*   Pass components as `children` props to create flexible and nested structures.
+*   Refer to the "React Design Patterns" cheatsheet for more details on composition and other patterns.
+
+[source,javascript]
+----
+// Container Component
+const Card = (props) => {
+  return (
+    <div className="card">
+      <div className="card-header">{props.header}</div>
+      <div className="card-body">{props.children}</div>
+    </div>
+  );
+};
+
+// Usage with Composition
+const App = () => {
+  return (
+    <Card header="Welcome Card">
+      <p>This is the content of the card.</p>
+      <button>Click me</button>
+    </Card>
+  );
+};
+----
+
+This cheatsheet covers essential aspects of React components and form handling. Explore the official React documentation (https://reactjs.org/docs/) for a comprehensive understanding and advanced features.

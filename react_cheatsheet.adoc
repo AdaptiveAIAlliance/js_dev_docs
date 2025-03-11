@@ -1,0 +1,766 @@
+= React Cheatsheet
+
+This cheatsheet provides a quick reference to essential React concepts and syntax.
+
+== Core Concepts
+
+=== JSX (JavaScript XML)
+
+*   Syntax extension that allows writing HTML-like code in JavaScript.
+*   Gets transformed into regular JavaScript function calls.
+
+[source,javascript]
+----
+// JSX Example
+const element = <h1>Hello, JSX!</h1>;
+
+// Equivalent JavaScript
+const element = React.createElement(
+  'h1',
+  null,
+  'Hello, JSX!'
+);
+----
+
+=== Components
+
+*   Reusable building blocks of React UIs.
+*   Two main types: Functional and Class components.
+
+==== Functional Components
+
+*   Simple functions that return JSX.
+*   Use Hooks for state and lifecycle features.
+
+[source,javascript]
+----
+// Functional Component Example
+const Welcome = (props) => {
+  return <h1>Hello, {props.name}</h1>;
+}
+----
+
+==== Class Components
+
+*   ES6 classes that extend `React.Component`.
+*   Use `render()` method to return JSX.
+*   Manage state and lifecycle using class methods.
+
+[source,javascript]
+----
+// Class Component Example
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+----
+
+=== Props (Properties)
+
+*   Used to pass data from parent to child components.
+*   Read-only from the child component's perspective.
+
+[source,javascript]
+----
+// Passing Props
+<Welcome name="Alice" />;
+
+// Accessing Props in Functional Component
+const Welcome = (props) => {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+// Accessing Props in Class Component
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+----
+
+=== State
+
+*   Internal data managed by a component.
+*   Changes to state trigger re-renders.
+
+==== State in Functional Components (useState Hook)
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0); // Initialize state with 0
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+----
+
+==== State in Class Components
+
+[source,javascript]
+----
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 }; // Initialize state in constructor
+  }
+
+  incrementCount = () => {
+    this.setState({ count: this.state.count + 1 }); // Update state using setState
+  }
+
+  render() {
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.incrementCount}>Increment</button>
+      </div>
+    );
+  }
+}
+----
+
+=== Lifecycle Methods (Class Components)
+
+*   Methods invoked at different stages of a component's lifecycle.
+
+==== `componentDidMount()`
+
+*   Invoked immediately after a component is mounted (inserted into the DOM tree).
+*   Good for fetching data or setting up subscriptions.
+
+[source,javascript]
+----
+class MyComponent extends React.Component {
+  componentDidMount() {
+    console.log('Component did mount');
+    // Fetch data here
+  }
+  // ...
+}
+----
+
+==== `componentDidUpdate(prevProps, prevState)`
+
+*   Invoked immediately after updating occurs.
+*   Compare current and previous props/state to perform side effects.
+
+[source,javascript]
+----
+class MyComponent extends React.Component {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.data !== this.state.data) {
+      console.log('Component did update, data changed');
+      // Perform side effects based on data change
+    }
+  }
+  // ...
+}
+----
+
+==== `componentWillUnmount()`
+
+*   Invoked immediately before a component is unmounted and destroyed.
+*   Good for cleanup, like invalidating timers or canceling network requests.
+
+[source,javascript]
+----
+class MyComponent extends React.Component {
+  componentWillUnmount() {
+    console.log('Component will unmount');
+    // Cleanup resources here
+  }
+  // ...
+}
+----
+
+=== Hooks (Functional Components)
+
+*   Functions that let you "hook into" React state and lifecycle features from functional components.
+
+==== `useState`
+
+*   Enables state management in functional components.
+*   Returns a state variable and a function to update it.
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const Example = () => {
+  const [name, setName] = useState('Initial Name');
+  // ...
+}
+----
+
+==== `useEffect`
+
+*   Performs side effects in functional components (data fetching, subscriptions, manual DOM mutations).
+*   Runs after every render by default.
+*   Dependency array controls when effect runs.
+
+[source,javascript]
+----
+import React, { useState, useEffect } from 'react';
+
+const Example = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `Count: ${count}`; // Side effect (DOM update)
+    return () => {
+      // Cleanup function (optional, runs before component unmount or re-render with different dependencies)
+      console.log('Effect cleanup');
+    };
+  }, [count]); // Dependency array: effect runs only if 'count' changes
+
+  // ...
+}
+----
+
+== Rendering Content
+
+=== Conditional Rendering
+
+*   Display different content based on conditions.
+
+==== If/else
+
+[source,javascript]
+----
+const MyComponent = (props) => {
+  if (props.isLoggedIn) {
+    return <div>Welcome back!</div>;
+  } else {
+    return <div>Please log in.</div>;
+  }
+}
+----
+
+==== Ternary Operator
+
+[source,javascript]
+----
+const MyComponent = (props) => {
+  return props.isLoggedIn ? <div>Welcome back!</div> : <div>Please log in.</div>;
+}
+----
+
+==== Short-circuit (&&)
+
+*   Conditionally render something if a condition is true.
+
+[source,javascript]
+----
+const MyComponent = (props) => {
+  return props.showMessage && <div>This message is shown conditionally.</div>;
+}
+----
+
+=== Lists and Keys
+
+*   Render lists of elements using `map()`.
+*   `key` prop helps React identify list items efficiently.
+
+[source,javascript]
+----
+const items = [
+  { id: 1, text: 'Item 1' },
+  { id: 2, text: 'Item 2' },
+  { id: 3, text: 'Item 3' }
+];
+
+const MyList = () => {
+  return (
+    <ul>
+      {items.map(item => (
+        <li key={item.id}>{item.text}</li> // Use unique item.id as key
+      ))}
+    </ul>
+  );
+}
+----
+
+== Handling Events
+
+*   Handle user interactions using event handlers.
+*   Event names are camelCase (e.g., `onClick`, `onChange`).
+
+[source,javascript]
+----
+const MyButton = () => {
+  const handleClick = () => {
+    alert('Button clicked!');
+  };
+
+  return (
+    <button onClick={handleClick}>Click Me</button>
+  );
+}
+----
+
+== Forms
+
+=== Controlled Components
+
+*   Form elements whose values are controlled by React state.
+*   React state is the "single source of truth" for form data.
+
+[source,javascript]
+----
+import React, { useState } from 'react';
+
+const MyForm = () => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value); // Update state on input change
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent default form submission
+    alert(`Input value: ${inputValue}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Enter text:
+        <input type="text" value={inputValue} onChange={handleChange} />
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+----
+
+== Context API (for prop-drilling avoidance)
+
+*   Provides a way to share values like theme, user authentication across the component tree without explicitly passing props at every level.
+
+[source,javascript]
+----
+import React, { createContext, useContext } from 'react';
+
+// Create a context
+const MyContext = createContext();
+
+// Provider Component
+const MyProvider = ({ children }) => {
+  const value = { theme: 'light' };
+  return (
+    <MyContext.Provider value={value}>
+      {children}
+    </MyContext.Provider>
+  );
+};
+
+// Consumer Component
+const MyConsumer = () => {
+  const contextValue = useContext(MyContext);
+  return <div>Theme: {contextValue.theme}</div>;
+};
+
+// Usage
+const App = () => (
+  <MyProvider>
+    <MyConsumer />
+  </MyProvider>
+);
+----
+
+== React Router (for navigation)
+
+*   Library for handling navigation in React applications.
+*   Enables creating single-page applications with multiple views.
+
+[source,javascript]
+----
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+
+const Home = () => <div>Home Page</div>;
+const About = () => <div>About Page</div>;
+
+const App = () => (
+  <Router>
+    <nav>
+      <ul>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/about">About</Link></li>
+      </ul>
+    </nav>
+    <Switch>
+      <Route path="/about"><About /></Route>
+      <Route path="/"><Home /></Route>
+    </Switch>
+  </Router>
+);
+----
+
+This cheatsheet covers the fundamental concepts of React. For more in-depth information, refer to the official React documentation: https://reactjs.org/docs/
+
+
+= React Library Cheatsheets
+
+This document provides cheatsheets for popular React state management and data fetching libraries: React Query, Redux, Zustand, and Recoil.
+
+== React Query Cheatsheet
+
+React Query is a library for data fetching, caching, synchronization and updating in React.
+
+=== Core Concepts
+
+*   **Queries:**  Represent fetching data from an asynchronous source.
+*   **Mutations:** Represent actions that modify data on the server.
+*   **Cache:** Stores fetched data to avoid redundant requests.
+*   **Invalidation:** Process of marking cached data as stale, triggering refetching.
+
+=== Key Features
+
+*   **Automatic Caching:**  Caches query results in memory.
+*   **Background Refetching:** Keeps data fresh by refetching in the background.
+*   **Query Invalidation:**  Invalidates queries based on mutations or events.
+*   **Deduping Requests:** Prevents duplicate requests for the same query.
+*   **Error Handling & Retries:**  Manages errors and retries failed requests.
+*   **Pagination & Infinite Queries:**  Supports fetching paginated and infinite lists.
+*   **Devtools:**  Provides a browser extension for inspecting and debugging queries.
+
+=== Code Examples
+
+==== Basic Query
+
+[source,javascript]
+----
+import { useQuery } from 'react-query';
+
+const fetchTodos = async () => {
+  const response = await fetch('/api/todos');
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+const Todos = () => {
+  const { data, error, isLoading } = useQuery('todos', fetchTodos);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>An error occurred: {error.message}</p>;
+
+  return (
+    <ul>
+      {data.map(todo => (
+        <li key={todo.id}>{todo.title}</li>
+      ))}
+    </ul>
+  );
+};
+----
+
+==== Mutation
+
+[source,javascript]
+----
+import { useMutation, useQueryClient } from 'react-query';
+
+const addTodo = async (newTodo) => {
+  const response = await fetch('/api/todos', {
+    method: 'POST',
+    body: JSON.stringify(newTodo),
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok) {
+    throw new Error('Failed to add todo');
+  }
+  return response.json();
+};
+
+const AddTodoForm = () => {
+  const [todoText, setTodoText] = React.useState('');
+  const queryClient = useQueryClient();
+  const mutation = useMutation(addTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('todos'); // Invalidate and refetch todos query
+      setTodoText('');
+    },
+  });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    mutation.mutate({ title: todoText });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={todoText}
+        onChange={(e) => setTodoText(e.target.value)}
+        placeholder="Enter todo"
+      />
+      <button type="submit">Add Todo</button>
+    </form>
+  );
+};
+----
+
+== Redux Cheatsheet
+
+Redux is a predictable state container for JavaScript applications. It helps manage application state in a centralized and predictable way.
+
+=== Core Concepts
+
+*   **Store:** Single source of truth for the application state.
+*   **Actions:** Plain JavaScript objects describing events that occur in the application.
+*   **Reducers:** Pure functions that specify how the state changes in response to actions.
+*   **Dispatch:** Function used to send actions to the store.
+*   **Selectors:** Functions to extract specific pieces of state from the store.
+
+=== Key Features
+
+*   **Centralized State Management:**  Manages application state in a single store.
+*   **Predictable State Updates:**  State changes are predictable and follow a strict unidirectional data flow.
+*   **Middleware:**  Allows extending Redux with custom logic for actions.
+*   **Devtools:**  Provides browser extension for debugging and time-travel debugging.
+*   **Large Ecosystem:**  Extensive community and middleware libraries available.
+
+=== Code Examples
+
+==== Reducer
+
+[source,javascript]
+----
+// Reducer function
+const counterReducer = (state = { value: 0 }, action) => {
+  switch (action.type) {
+    case 'counter/incremented':
+      return { value: state.value + 1 };
+    case 'counter/decremented':
+      return { value: state.value - 1 };
+    default:
+      return state;
+  }
+}
+----
+
+==== Actions
+
+[source,javascript]
+----
+// Action creators
+const increment = () => {
+  return {
+    type: 'counter/incremented'
+  }
+}
+
+const decrement = () => {
+  return {
+    type: 'counter/decremented'
+  }
+}
+----
+
+==== Store Configuration
+
+[source,javascript]
+----
+import { configureStore } from '@reduxjs/toolkit'
+import counterReducer from './counterReducer'
+
+// Configure the Redux store
+const store = configureStore({
+  reducer: {
+    counter: counterReducer
+  }
+})
+
+export default store;
+----
+
+==== Using Redux in React (with `react-redux`)
+
+[source,javascript]
+----
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { increment, decrement } from './actions'; // Assuming actions are in actions.js
+
+const CounterComponent = () => {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+
+  return (
+    <div>
+      <button onClick={() => dispatch(decrement())}>-</button>
+      <span>{count}</span>
+      <button onClick={() => dispatch(increment())}>+</button>
+    </div>
+  );
+};
+----
+
+== Zustand Cheatsheet
+
+Zustand is a small, fast and scalable bearbones state-management solution using simplified flux principles. It is unopinionated and allows for various approaches.
+
+=== Core Concepts
+
+*   **Store:**  A hook that holds the state and actions.
+*   **State:**  Plain JavaScript objects holding the application data.
+*   **Actions (Setters):** Functions within the store to update the state.
+*   **Selectors:**  Functions to extract specific parts of the state.
+
+=== Key Features
+
+*   **Simplicity:**  Minimalistic API, easy to learn and use.
+*   **Unopinionated:**  Flexible and adaptable to different patterns.
+*   **Performance:**  Fast and efficient updates and re-renders.
+*   **Hooks-based:**  Designed for functional components and Hooks.
+*   **Scalability:**  Works well for both small and large applications.
+*   **Minimal Boilerplate:**  Reduces boilerplate code compared to Redux.
+
+=== Code Examples
+
+==== Creating a Store
+
+[source,javascript]
+----
+import { create } from 'zustand'
+
+// Create a Zustand store
+const useStore = create((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+  reset: () => set({ count: 0 }),
+}))
+
+export default useStore;
+----
+
+==== Using the Store in a Component
+
+[source,javascript]
+----
+import React from 'react';
+import useStore from './store'; // Assuming store is in store.js
+
+const CounterComponent = () => {
+  const { count, increment, decrement, reset } = useStore();
+
+  return (
+    <div>
+      <button onClick={decrement}>-</button>
+      <span>{count}</span>
+      <button onClick={increment}>+</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+};
+----
+
+==== Selecting Parts of the State
+
+[source,javascript]
+----
+import React from 'react';
+import useStore from './store';
+
+const CountDisplay = () => {
+  const count = useStore((state) => state.count); // Select only the count
+
+  return (
+    <p>Count: {count}</p>
+  );
+};
+----
+
+== Recoil Cheatsheet
+
+Recoil is a state management library for React apps. It works and thinks like React. With Recoil, you can create a data-flow graph that flows from atoms (shared state) through selectors (derived state) and into your React components.
+
+=== Core Concepts
+
+*   **Atoms:** Units of state that components subscribe to. Atoms are globally accessible and mutable.
+*   **Selectors:** Pure functions that derive state from atoms or other selectors. Selectors are memoized and efficient.
+*   **Components Subscribe to Atoms/Selectors:** Components read atom or selector values using hooks, and re-render when atoms they subscribe to are updated.
+
+=== Key Features
+
+*   **Granular State Updates:** Components only re-render when the specific atom or selector they depend on changes.
+*   **Derived Data:** Selectors efficiently derive data from state, memoizing results.
+*   **Shared State:** Atoms are globally accessible, simplifying state sharing across components.
+*   **Time-Travel Debugging:** Recoil DevTools enables time-travel debugging and state inspection.
+*   **Concurrent Mode Compatibility:** Designed to work well with React Concurrent Mode.
+
+=== Code Examples
+
+==== Atom Definition
+
+[source,javascript]
+----
+import { atom } from 'recoil';
+
+// Define an atom
+export const countState = atom({
+  key: 'countState', // unique ID (globally unique)
+  default: 0,       // default value
+});
+----
+
+==== Selector Definition
+
+[source,javascript]
+----
+import { selector } from 'recoil';
+import { countState } from './atoms'; // Assuming atoms.js
+
+// Define a selector
+export const doubledCountState = selector({
+  key: 'doubledCountState',
+  get: ({ get }) => {
+    const count = get(countState);
+    return count * 2;
+  },
+});
+----
+
+==== Using Atoms and Selectors in Components
+
+[source,javascript]
+----
+import React from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { countState, doubledCountState } from './atoms'; // Assuming atoms.js
+
+const CounterComponent = () => {
+  const [count, setCount] = useRecoilState(countState); // Atom state
+  const doubledCount = useRecoilValue(doubledCountState); // Selector value
+
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(count - 1);
+
+  return (
+    <div>
+      <button onClick={decrement}>-</button>
+      <span>Count: {count}, Doubled: {doubledCount}</span>
+      <button onClick={increment}>+</button>
+    </div>
+  );
+};
+----
+
+This document provides a basic overview of React Query, Redux, Zustand, and Recoil.  Refer to their respective official documentations for comprehensive details and advanced features.
+
+* React Query Documentation: https://react-query.tanstack.com/
+* Redux Documentation: https://redux.js.org/
+* Zustand Documentation: https://github.com/pmndrs/zustand
+* Recoil Documentation: https://recoiljs.org/

@@ -1,0 +1,566 @@
+Creational Design Patterns
+Creational design patterns deal with object creation mechanisms, aiming to instantiate objects in a flexible and controlled way.
+
+Constructor Pattern: This is a fundamental pattern in JavaScript for creating objects. JavaScript functions can act as constructors when invoked with the new keyword.
+
+Native to JavaScript: Yes, this is a core feature of JavaScript's object creation.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+function Person(name, age) {
+    this.name = name;
+    this.age = age;
+    this.sayHello = function() {
+        console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+    };
+}
+
+const person1 = new Person("Alice", 30);
+person1.sayHello(); // Output: Hello, my name is Alice and I am 30 years old.
+----
+
+
+Prototype Pattern: JavaScript is a prototype-based language, and this pattern leverages prototypal inheritance. Objects are created by cloning or extending existing objects (prototypes).
+
+Native to JavaScript: Yes, prototypal inheritance is a defining characteristic of JavaScript.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+const carPrototype = {
+    startEngine: function() {
+        console.log("Engine started.");
+    }
+};
+
+const car1 = Object.create(carPrototype);
+car1.make = "Toyota";
+car1.model = "Camry";
+
+car1.startEngine(); // Output: Engine started.
+----
+Factory Pattern: This pattern provides an interface for creating objects but lets subclasses decide which class to instantiate. In JavaScript, this is often implemented using factory functions.
+
+Native to JavaScript: Yes, factory functions are a common and idiomatic way to create objects in JavaScript, offering flexibility.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+function createAnimal(type, name) {
+    if (type === "dog") {
+        return {
+            type: "dog",
+            name: name,
+            speak: () => "Woof!"
+        };
+    } else if (type === "cat") {
+        return {
+            type: "cat",
+            name: name,
+            speak: () => "Meow!"
+        };
+    } else {
+        return null;
+    }
+}
+
+const dog = createAnimal("dog", "Buddy");
+const cat = createAnimal("cat", "Whiskers");
+
+console.log(dog.speak()); // Output: Woof!
+console.log(cat.speak()); // Output: Meow!
+----
+
+Singleton Pattern: Ensures a class has only one instance and provides a global point of access to it. This is useful for managing resources or configurations.  
+
+Common in JavaScript: While not strictly "native", it's a frequently used pattern in JavaScript, especially in module implementations.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+let instance = null;
+
+class Singleton {
+    constructor() {
+        if (!instance) {
+            instance = this;
+        }
+        return instance;
+    }
+
+    getInstance() {
+        return this;
+    }
+}
+
+const singletonInstance1 = new Singleton();
+const singletonInstance2 = new Singleton();
+
+console.log(singletonInstance1 === singletonInstance2); // Output: true
+----
+
+Module Pattern:  In JavaScript, the Module pattern is used to encapsulate code, creating private and public scopes, and avoiding global namespace pollution.  Modern JavaScript modules (ES modules) are a native implementation of this concept.
+
+Native to JavaScript: Yes, especially with ES Modules (import/export syntax), which are now a standard part of JavaScript. The older "revealing module pattern" using closures is also very common.
+
+Code Example (ES Modules):
+
+.JavaScript
+[source, javascript]
+----
+// mathUtils.js (Module file)
+const privateCounter = 0;
+
+export function incrementCounter() {
+    privateCounter++;
+}
+
+export function getCounter() {
+    return privateCounter;
+}
+
+// main.js (Another file using the module)
+import { incrementCounter, getCounter } from './mathUtils.js';
+
+incrementCounter();
+console.log(getCounter()); // Output: 1
+Code Example (Revealing Module Pattern - older approach):
+----
+
+.JavaScript
+[source, javascript]
+----
+const myModule = (function() {
+    let privateVariable = "Hello";
+
+    function privateMethod() {
+        console.log(privateVariable);
+    }
+
+    return {
+        publicMethod: function() {
+            privateMethod();
+        }
+    };
+})();
+
+myModule.publicMethod(); // Output: Hello
+// myModule.privateVariable is undefined (private)
+----
+
+Builder Pattern: Separates the construction of a complex object from its representation, allowing the same construction process to create different representations.  
+
+Applicable to JavaScript: Useful when object creation involves many steps or configurations.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+class QueryBuilder {
+    constructor() {
+        this.query = {
+            select: [],
+            from: null,
+            where: []
+        };
+    }
+
+    select(fields) {
+        this.query.select = this.query.select.concat(fields);
+        return this;
+    }
+
+    from(table) {
+        this.query.from = table;
+        return this;
+    }
+
+    where(condition) {
+        this.query.where.push(condition);
+        return this;
+    }
+
+    build() {
+        return this.query;
+    }
+}
+
+const query = new QueryBuilder()
+    .select(['name', 'age'])
+    .from('users')
+    .where('age > 18')
+    .build();
+
+console.log(query);
+// Output: { select: [ 'name', 'age' ], from: 'users', where: [ 'age > 18' ] }
+----
+
+Structural Design Patterns
+Structural design patterns are concerned with how classes and objects are composed to form larger structures.
+
+Decorator Pattern:  Dynamically adds behavior to objects without altering their class. In JavaScript, this can be implemented using higher-order functions or ES7 decorators (though ES7 decorators are still a proposal and not universally used in their class form).
+
+Applicable to JavaScript: Useful for adding features dynamically. Higher-order functions make this pattern quite natural in JavaScript.
+
+Code Example (using higher-order functions):
+
+.JavaScript
+[source, javascript]
+----
+function coffeeMachine() {
+    return {
+        makeCoffee: () => "Coffee"
+    };
+}
+
+function withMilk(machine) {
+    const originalMakeCoffee = machine.makeCoffee;
+    machine.makeCoffee = () => originalMakeCoffee() + " with Milk";
+    return machine;
+}
+
+function withSugar(machine) {
+    const originalMakeCoffee = machine.makeCoffee;
+    machine.makeCoffee = () => originalMakeCoffee() + " and Sugar";
+    return machine;
+}
+
+let myMachine = coffeeMachine();
+myMachine = withMilk(myMachine);
+myMachine = withSugar(myMachine);
+
+console.log(myMachine.makeCoffee()); // Output: Coffee with Milk and Sugar
+----
+
+Facade Pattern: Provides a simplified interface to a complex subsystem. This hides the complexities of the subsystem and makes it easier to use.
+
+Applicable to JavaScript: Useful for simplifying complex APIs or libraries.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+// Complex subsystem
+const subsystem1 = {
+    operation1: () => "Subsystem 1 operation 1"
+};
+
+const subsystem2 = {
+    operation2: () => "Subsystem 2 operation 2"
+};
+
+// Facade
+const facade = {
+    complexOperation: function() {
+        console.log("Facade calling subsystem operations:");
+        console.log(subsystem1.operation1());
+        console.log(subsystem2.operation2());
+    }
+};
+
+facade.complexOperation();
+// Output:
+// Facade calling subsystem operations:
+// Subsystem 1 operation 1
+// Subsystem 2 operation 2
+----
+
+Adapter Pattern: Allows incompatible interfaces to work together. It converts the interface of one class into an interface that clients expect.
+
+Applicable to JavaScript: Can be useful when integrating with external libraries or APIs that have different interfaces.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+// Old interface
+class OldCalculator {
+    constructor() {
+        this.operations = function(term1, term2, operation) {
+            switch (operation) {
+                case 'add': return term1 + term2;
+                case 'sub': return term1 - term2;
+                default: return NaN;
+            }
+        };
+    }
+}
+
+// New interface
+class NewCalculator {
+    add(term1, term2) {
+        return term1 + term2;
+    }
+
+    subtract(term1, term2) {
+        return term1 - term2;
+    }
+}
+
+// Adapter
+class CalculatorAdapter {
+    constructor() {
+        this.newCalc = new NewCalculator();
+    }
+
+    operations(term1, term2, operation) {
+        switch (operation) {
+            case 'add': return this.newCalc.add(term1, term2);
+            case 'sub': return this.newCalc.subtract(term1, term2);
+            default: return NaN;
+        }
+    }
+}
+
+const oldCalc = new OldCalculator();
+console.log(oldCalc.operations(5, 3, 'add')); // Output: 8
+
+const adapter = new CalculatorAdapter();
+console.log(adapter.operations(5, 3, 'add')); // Output: 8
+----
+
+Composite Pattern:  Composes objects into tree structures to represent part-whole hierarchies. It lets clients treat individual objects and compositions of objects uniformly.  
+
+Applicable to JavaScript: Useful for representing hierarchical structures like DOM elements or organizational charts.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+class Product {
+    constructor(name, price) {
+        this.name = name;
+        this.price = price;
+    }
+    getPrice() {
+        return this.price;
+    }
+}
+
+class Box {
+    constructor() {
+        this.products = [];
+    }
+    addProduct(product) {
+        this.products.push(product);
+    }
+    getPrice() {
+        let totalPrice = 0;
+        for (const product of this.products) {
+            totalPrice += product.getPrice();
+        }
+        return totalPrice;
+    }
+}
+
+const phone = new Product("Phone", 500);
+const charger = new Product("Charger", 20);
+const box = new Box();
+box.addProduct(phone);
+box.addProduct(charger);
+
+console.log(`Box price: $${box.getPrice()}`); // Output: Box price: $520
+----
+
+Behavioral Design Patterns
+Behavioral design patterns are concerned with algorithms and the assignment of responsibilities between objects.  
+
+Observer Pattern: Defines a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.  This is very common in event-driven JavaScript applications.  
+
+Native to JavaScript: Yes, event listeners and the DOM event system are built upon the Observer pattern. Libraries like RxJS also heavily utilize this pattern.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+class Subject {
+    constructor() {
+        this.observers = [];
+    }
+
+    subscribe(observer) {
+        this.observers.push(observer);
+    }
+
+    unsubscribe(observer) {
+        this.observers = this.observers.filter(obs => obs !== observer);
+    }
+
+    notify(data) {
+        this.observers.forEach(observer => observer.update(data));
+    }
+}
+
+class Observer {
+    constructor(name) {
+        this.name = name;
+    }
+
+    update(data) {
+        console.log(`Observer ${this.name} received update: ${data}`);
+    }
+}
+
+const subject = new Subject();
+
+const observer1 = new Observer("One");
+const observer2 = new Observer("Two");
+
+subject.subscribe(observer1);
+subject.subscribe(observer2);
+
+subject.notify("Hello Observers!");
+// Output:
+// Observer One received update: Hello Observers!
+// Observer Two received update: Hello Observers!
+----
+
+Strategy Pattern: Defines a family of algorithms, encapsulates each one, and makes them interchangeable. Strategy lets the algorithm vary independently of clients that use it.  
+
+Applicable to JavaScript: Useful for implementing different algorithms or behaviors that can be swapped easily.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+// Strategies
+const strategies = {
+    "lowerCase": (text) => text.toLowerCase(),
+    "upperCase": (text) => text.toUpperCase(),
+    "capitalize": (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+};
+
+// Context
+const textFormatter = (text, strategyName) => {
+    const strategy = strategies[strategyName];
+    if (!strategy) {
+        throw new Error("Strategy not found");
+    }
+    return strategy(text);
+};
+
+console.log(textFormatter("HELLO WORLD", "lowerCase"));   // Output: hello world
+console.log(textFormatter("hello world", "upperCase"));   // Output: HELLO WORLD
+console.log(textFormatter("hello world", "capitalize"));  // Output: Hello world
+----
+
+Command Pattern: Encapsulates a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.  
+
+Applicable to JavaScript: Useful for event handling, asynchronous operations, and implementing undo/redo functionality.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+class Light {
+    constructor() {
+        this.isOn = false;
+    }
+    turnOn() {
+        this.isOn = true;
+        console.log("Light is ON");
+    }
+    turnOff() {
+        this.isOn = false;
+        console.log("Light is OFF");
+    }
+}
+
+class TurnOnCommand {
+    constructor(light) {
+        this.light = light;
+    }
+    execute() {
+        this.light.turnOn();
+    }
+}
+
+class TurnOffCommand {
+    constructor(light) {
+        this.light = light;
+    }
+    execute() {
+        this.light.turnOff();
+    }
+}
+
+const light = new Light();
+const turnOnCommand = new TurnOnCommand(light);
+const turnOffCommand = new TurnOffCommand(light);
+
+turnOnCommand.execute();  // Output: Light is ON
+turnOffCommand.execute(); // Output: Light is OFF
+----
+
+Mediator Pattern: Defines an object that encapsulates how a set of objects interact. Mediator promotes loose coupling by keeping objects from referring to each other explicitly, and lets you vary their interaction independently.  
+
+Applicable to JavaScript: Useful in complex UI components or systems where many objects need to interact but direct coupling should be avoided.
+
+Code Example:
+
+.JavaScript
+[source, javascript]
+----
+class User {
+    constructor(name, mediator) {
+        this.name = name;
+        this.mediator = mediator;
+    }
+
+    send(message) {
+        this.mediator.send(message, this);
+    }
+
+    receive(message, from) {
+        console.log(`${this.name} received: ${message} from ${from.name}`);
+    }
+}
+
+class ChatMediator {
+    constructor() {
+        this.users = [];
+    }
+
+    addUser(user) {
+        this.users.push(user);
+    }
+
+    send(message, user) {
+        this.users.forEach(u => {
+            if (u !== user) {
+                u.receive(message, user);
+            }
+        });
+    }
+}
+
+const mediator = new ChatMediator();
+const user1 = new User("Alice", mediator);
+const user2 = new User("Bob", mediator);
+const user3 = new User("Charlie", mediator);
+
+mediator.addUser(user1);
+mediator.addUser(user2);
+mediator.addUser(user3);
+
+user1.send("Hello everyone!");
+// Output:
+// Bob received: Hello everyone! from Alice
+// Charlie received: Hello everyone! from Alice
+----

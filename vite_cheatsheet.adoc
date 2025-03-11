@@ -1,0 +1,139 @@
+= Vite Cheatsheet
+
+This cheatsheet provides a quick reference to essential Vite concepts, commands, and configuration for fast and modern web development.
+
+== Core Concepts
+
+*   **ES Modules (ESM):** Vite leverages native ES modules, allowing for faster development and leaner bundles.
+*   **Rollup:**  Vite uses Rollup for production builds, ensuring optimized and efficient output.
+*   **Development Server:**  Provides a fast and feature-rich development server with hot module replacement (HMR).
+*   **Build Tool:**  Bundles and optimizes code for production deployment.
+*   **Plugin Ecosystem:**  Extensible via plugins for various functionalities (e.g., TypeScript, React, Vue).
+
+== Key Features
+
+*   **Instant Server Start:** Dev server starts almost instantly due to native ESM.
+*   **Lightning Fast HMR:** Hot Module Replacement is incredibly fast, updating changes in the browser instantly.
+*   **Rich Features:**  Built-in support for TypeScript, JSX, CSS preprocessors, and more.
+*   **Universal Plugins:** Plugin API is compatible with Rollup plugins.
+*   **Optimized Build:**  Rollup-powered production builds with code splitting, tree-shaking, and other optimizations.
+
+== CLI Commands
+
+*   **`npm create vite@latest <project-name>` or `yarn create vite <project-name>` or `pnpm create vite <project-name>`:**  Scaffold a new Vite project. Prompts to select a framework and variant.
+*   **`npm install` or `yarn install` or `pnpm install`:** Install project dependencies.
+*   **`npm run dev` or `yarn dev` or `pnpm dev`:** Start the development server.
+*   **`npm run build` or `yarn build` or `pnpm build`:** Build the project for production. Output in `dist` directory.
+*   **`npm run preview` or `yarn preview` or `pnpm preview`:**  Locally preview the production build.
+
+== Configuration (vite.config.js or vite.config.ts)
+
+*   Vite is configured via `vite.config.js` or `vite.config.ts` file in the project root.
+
+=== Basic Configuration Example (vite.config.js)
+
+[source,javascript]
+----
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()], // React plugin
+  server: {
+    port: 3000, // Custom dev server port
+    open: true, // Automatically open browser on start
+    proxy: {    // Proxy requests to backend server
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
+  },
+  build: {
+    outDir: 'dist', // Output directory for build files (default: dist)
+    minify: 'terser', // Minification tool ('terser' or 'esbuild')
+    sourcemap: true,  // Generate sourcemaps for debugging
+  },
+})
+----
+
+=== Common Configuration Options
+
+*   **`plugins`:** Array of Vite plugins to extend functionality (e.g., framework support, CSS preprocessors).
+*   **`root`:** Project root directory (where `index.html` and `vite.config.js` are located).
+*   **`publicDir`:** Directory for static assets that should be copied to the build output as-is. (default: "public")
+*   **`base`:**  Base public path when served in production (if not served at root).
+*   **`server`:** Configuration for the development server.
+    *   `port`:  Server port.
+    *   `host`:  Server host (`true` for 0.0.0.0, `localhost`, or IP address).
+    *   `open`:  Automatically open browser on server start.
+    *   `proxy`:  Configure proxy rules for backend API requests.
+    *   `hmr`:  Hot Module Replacement options.
+*   **`build`:** Configuration for production builds.
+    *   `outDir`: Output directory.
+    *   `assetsDir`: Directory for static assets in build output (default: "assets").
+    *   `minify`:  Minification tool (`'terser'`, `'esbuild'`, or `false`).
+    *   `sourcemap`:  Generate sourcemaps (`true`, `false`, `'inline'`, `'hidden'`).
+    *   `rollupOptions`:  Fine-grained control over Rollup build process.
+*   **`resolve`:** Configure module resolution.
+    *   `alias`:  Path aliases for imports (e.g., `@/components` for `src/components`).
+*   **`css`:** Configure CSS processing.
+    *   `preprocessorOptions`: Options for CSS preprocessors (e.g., Sass, Less).
+
+== Plugins
+
+*   Vite's plugin API is powerful and extensible.
+*   Official Plugins:
+    *   `@vitejs/plugin-react`: React support.
+    *   `@vitejs/plugin-vue`: Vue support.
+    *   `@vitejs/plugin-svelte`: Svelte support.
+    *   `@vitejs/plugin-legacy`: Legacy browser support.
+*   Community Plugins:  Vast ecosystem of community plugins for various needs (e.g., CSS modules, image optimization, PWA).
+
+=== Example: Using Path Aliases (vite.config.js)
+
+[source,javascript]
+----
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // Alias '@' to './src'
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@assets': path.resolve(__dirname, 'src/assets'),
+    },
+  },
+})
+----
+
+=== Example: Importing with Alias
+
+[source,javascript]
+----
+// In a component file (e.g., src/components/MyComponent.jsx)
+import React from 'react';
+import Logo from '@assets/logo.svg'; // Using alias '@assets'
+
+const MyComponent = () => {
+  return (
+    <div>
+      <img src={Logo} alt="Logo" />
+      {/* ... */}
+    </div>
+  );
+};
+----
+
+== Important Notes
+
+*   **Entry Point:**  `index.html` is the entry point for Vite projects.
+*   **Dependency Pre-bundling:** Vite pre-bundles dependencies for faster startup and performance.
+*   **Development vs. Production:** Vite uses different strategies for development (ESM) and production (Rollup).
+*   **Official Documentation:** Refer to the official Vite documentation for comprehensive details and advanced configurations: https://vitejs.dev/
+
+This cheatsheet provides a starting point for using Vite. Explore the official documentation and plugin ecosystem to leverage its full potential.
